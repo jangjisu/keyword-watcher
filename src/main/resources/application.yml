@@ -28,10 +28,6 @@ spring:
 
     defer-datasource-initialization: true # (boot 2.5 이후) Hibernate 초기화 이후 data.sql 실행
 
-  h2:
-    console:
-      enabled: true
-
 ---
 spring:
   config:
