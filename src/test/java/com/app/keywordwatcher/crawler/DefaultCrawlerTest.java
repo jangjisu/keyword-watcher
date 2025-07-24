@@ -1,5 +1,8 @@
 package com.app.keywordwatcher.crawler;
 
+import com.app.keywordwatcher.domain.post.Post;
+import com.app.keywordwatcher.domain.site.Site;
+import com.app.keywordwatcher.exception.CrawlingParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeAll;
@@ -7,12 +10,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DefaultCrawlerTest {
 
+    public static final String URL = "https://culture.seoul.go.kr/culture/bbs/B0000002/list.do?menuNo=200052";
     static Document doc;
 
     Document emptyDoc;
@@ -61,53 +68,47 @@ class DefaultCrawlerTest {
         assertThat(cannotHandle).isTrue();
     }
 
-//    TODO 삭제
-//    @DisplayName("크롤링 테스트")
-//    @Test
-//    void crawlingTest() throws IOException {
-//        //given
-//        String url = "https://culture.seoul.go.kr/culture/bbs/B0000002/list.do?menuNo=200052";
-//
-//        Document doc = Jsoup.connect(url)
-//                .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-//                .timeout(10000)
-//                .get();
-//
-//        System.out.println("크롤링 데이터: " + doc);
-//
-//        // 1. 페이지 제목 확인
-//        System.out.println("페이지 제목: " + doc.title());
-//
-//        // 2. 게시글 목록 구조 파악
-//        Elements posts = doc.select("table tbody tr"); // 일반적인 게시판 구조
-//
-//        System.out.println("찾은 게시글 수: " + posts.size());
-//
-//        // 3. 각 게시글 정보 추출
-//        for (int i = 0; i < Math.min(posts.size(), 5); i++) { // 상위 5개만
-//            Element post = posts.get(i);
-//
-//            System.out.println("=== 게시글 " + (i + 1) + " ===");
-//            System.out.println("전체 HTML: " + post.html());
-//
-//            // 제목 추출 시도 (여러 선택자로)
-//            Element titleElement = post.select("a").first();
-//            if (titleElement != null) {
-//                System.out.println("제목: " + titleElement.text());
-//                System.out.println("링크: " + titleElement.attr("href"));
-//            }
-//
-//            // 날짜 정보 추출 시도
-//            Elements dateElements = post.select("td");
-//            System.out.println("컬럼 개수: " + dateElements.size());
-//            for (int j = 0; j < dateElements.size(); j++) {
-//                System.out.println("컬럼 " + j + ": " + dateElements.get(j).text());
-//            }
-//        }
-//
-//        // when
-//
-//        // then
-//    }
+    @DisplayName("크롤링 된 게시물 중 특정 날짜의 게시물을 가져올 수 있다.")
+    @Test
+    void get_date_post() {
+        // given
+        Site siteInfo = Site.create(URL, 1, 3);
+        LocalDate createdAt = LocalDate.of(2025, 7, 16);
 
+        // when
+        List<Post> datePost = defaultCrawler.getDatePost(doc, siteInfo, createdAt);
+
+        // then
+        assertThat(datePost).hasSize(1)
+                .containsExactlyInAnyOrder(
+                        Post.createPost("[서울식물원] 여름행사 [식물원은 미술관] 자원봉사자 모집", createdAt)
+                );
+    }
+
+    @DisplayName("크롤링 된 게시물 중 특정 날짜의 게시물 이 없는 경우 빈 리스트를 반환한다.")
+    @Test
+    void get_date_post_empty() {
+        // given
+        Site siteInfo = Site.create(URL, 1, 3);
+        LocalDate createdAt = LocalDate.of(2025, 7, 17);
+
+        // when
+        List<Post> datePost = defaultCrawler.getDatePost(doc, siteInfo, createdAt);
+
+        // then
+        assertThat(datePost).isEmpty();
+    }
+
+    @DisplayName("크롤링 된 게시물 중 특정 날짜의 게시물을 가져올 수 있다.")
+    @Test
+    void get_date_post_invalid_position() {
+        // given
+        Site siteInfo = Site.create(URL, 1, 7);
+        LocalDate createdAt = LocalDate.of(2025, 7, 16);
+
+        // when // then
+        assertThatThrownBy(() -> defaultCrawler.getDatePost(doc, siteInfo, createdAt))
+                .isInstanceOf(CrawlingParseException.class)
+                .hasMessage("Crawling parse error on " + URL + ". Expected at least 8 columns, but found 4.");
+    }
 }
