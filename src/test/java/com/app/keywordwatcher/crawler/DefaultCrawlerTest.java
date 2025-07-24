@@ -26,7 +26,7 @@ class DefaultCrawlerTest {
 
     Document emptyTableDoc = Jsoup.parse("<html><body><table><tbody></tbody></table></body></html>");
 
-    private DefaultCrawler defaultCrawler = new DefaultCrawler();
+    private final DefaultCrawler defaultCrawler = new DefaultCrawler();
 
     @BeforeAll
     static void setUp() throws IOException {
