@@ -12,7 +12,7 @@ public class DateUtil {
             return onError.get();
         }
 
-        String digits = dateString.replaceAll("[^0-9]", "");
+        String digits = dateString.replaceAll("\\D", "");
         try {
             return switch (digits.length()) {
                 case 6 -> LocalDate.of(
