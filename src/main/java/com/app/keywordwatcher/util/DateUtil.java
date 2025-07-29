@@ -3,7 +3,6 @@ package com.app.keywordwatcher.util;
 import com.app.keywordwatcher.exception.DateParseException;
 
 import java.time.LocalDate;
-import java.util.function.Supplier;
 
 public class DateUtil {
     private DateUtil() {
