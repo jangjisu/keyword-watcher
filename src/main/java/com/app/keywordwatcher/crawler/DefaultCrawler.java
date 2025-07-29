@@ -25,24 +25,19 @@ public class DefaultCrawler extends Crawler {
     private Optional<Post> mapToPostIfMatchDate(Element element, Site siteInfo, LocalDate date) {
         Elements tds = element.select("td");
         int dateIdx = siteInfo.getCreateAtPosition();
+        int titleIdx = siteInfo.getTitlePosition();
 
-        if (tds.size() <= dateIdx) {
+        if (tds.size() <= dateIdx || tds.size() <= titleIdx) {
             throw new CrawlingParseException("Crawling parse error on " + siteInfo.getUrl() + ". Expected at least " + (dateIdx + 1) + " columns, but found " + tds.size() + ".");
         }
 
+        String title = tds.get(titleIdx).text();
         LocalDate createdAt = DateUtil.parseDate(tds.get(dateIdx).text());
         if (!createdAt.equals(date)) {
             return Optional.empty();
         }
 
-        return Optional.of(convertToPost(siteInfo, tds));
-    }
-
-    private Post convertToPost(Site siteInfo, Elements tds) {
-        return Post.createPost(
-                tds.get(siteInfo.getTitlePosition()).text(),
-                DateUtil.parseDate(tds.get(siteInfo.getCreateAtPosition()).text())
-        );
+        return Optional.of(Post.createPost(title, createdAt));
     }
 
     @Override

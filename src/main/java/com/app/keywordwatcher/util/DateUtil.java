@@ -1,5 +1,7 @@
 package com.app.keywordwatcher.util;
 
+import com.app.keywordwatcher.exception.DateParseException;
+
 import java.time.LocalDate;
 import java.util.function.Supplier;
 
@@ -7,9 +9,9 @@ public class DateUtil {
     private DateUtil() {
     }
 
-    public static LocalDate parseDate(String dateString, Supplier<LocalDate> onError) {
+    public static LocalDate parseDate(String dateString) {
         if (dateString == null || dateString.isEmpty()) {
-            return onError.get();
+            throw new DateParseException("Unparseable date: " + dateString);
         }
 
         String digits = dateString.replaceAll("\\D", "");
@@ -25,14 +27,10 @@ public class DateUtil {
                         Integer.parseInt(digits.substring(4, 6)),
                         Integer.parseInt(digits.substring(6, 8))
                 );
-                default -> onError.get();
+                default -> throw new DateParseException("Unparseable date: " + dateString);
             };
-        } catch (Exception e) {
-            return onError.get();
+        } catch (RuntimeException e) {
+            throw new DateParseException("Unparseable date: " + dateString + " - " + e.getMessage(), e);
         }
-    }
-
-    public static LocalDate parseDate(String dateString) {
-        return parseDate(dateString, () -> LocalDate.MIN);
     }
 }
