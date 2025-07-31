@@ -47,13 +47,12 @@ class SiteKeywordRepositoryTest {
         List<SiteKeyword> site2Keywords = siteKeywordRepository.findBySiteId(site2.getId());
 
         // then
-        assertThat(site1Keywords).hasSize(2);
         assertThat(site1Keywords).hasSize(2)
             .extracting(sk -> sk.getKeyword().getKeyText())
             .containsExactlyInAnyOrder("서울", "부산");
 
         assertThat(site2Keywords).hasSize(1)
-        .extracting(sk -> sk.getKeyword().getKeyText())
+            .extracting(sk -> sk.getKeyword().getKeyText())
             .containsExactly("대구");
     }
 }
