@@ -26,4 +26,8 @@ public class SiteKeyword extends BaseEntity {
         this.site = site;
         this.keyword = keyword;
     }
+
+    public static SiteKeyword create(Site site, Keyword keyword) {
+        return new SiteKeyword(site, keyword);
+    }
 }
