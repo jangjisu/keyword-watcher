@@ -1,0 +1,138 @@
+package com.app.keywordwatcher.crawler;
+
+import com.app.keywordwatcher.domain.keyword.Keyword;
+import com.app.keywordwatcher.domain.post.Post;
+import com.app.keywordwatcher.domain.site.Site;
+import com.app.keywordwatcher.domain.sitekeyword.SiteKeyword;
+import com.app.keywordwatcher.exception.CrawlingParseException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
+
+class TableCrawlingHandlerTest {
+
+    static Document doc;
+    static Site siteInfo;
+    static LocalDate testDate = LocalDate.of(2025, 7, 16);
+
+    Document emptyDoc = Jsoup.parse("<html><body></body></html>");
+    Document emptyTableDoc = Jsoup.parse("<html><body><table><tbody></tbody></table></body></html>");
+
+    @BeforeAll
+    static void setUp() throws IOException {
+        try (var is = TableCrawlingHandlerTest.class.getClassLoader().getResourceAsStream("TableCrawlPage.html")) {
+            assertNotNull(is, "테스트 리소스 파일을 찾을 수 없습니다.");
+            String html = new String(is.readAllBytes());
+            doc = Jsoup.parse(html);
+        }
+
+        String url = "https://culture.seoul.go.kr/culture/bbs/B0000002/list.do?menuNo=200052";
+        siteInfo = Site.create(url, 1, 3);
+
+        Keyword keyword = Keyword.create("모집");
+        SiteKeyword siteKeyword = SiteKeyword.create(siteInfo, keyword);
+        siteInfo.getSiteKeywords().add(siteKeyword);
+    }
+
+    @DisplayName("키워드가 포함된 게시글이 있을 때 정상적으로 Post 목록을 반환한다")
+    @Test
+    void matching_posts_date() {
+        // given
+        TableCrawlingHandler handler = new TableCrawlingHandler(null);
+
+        // when
+        List<Post> result = handler.handle(doc, siteInfo, testDate);
+
+        // then
+        assertThat(result).hasSize(1)
+                .extracting(Post::getTitle)
+                .contains("[서울식물원] 여름행사 [식물원은 미술관] 자원봉사자 모집");
+
+    }
+
+    @DisplayName("날짜가 일치하는 게시물이 없으면 빈 목록을 반환한다")
+    @Test
+    void no_matching_date() {
+        // given
+        TableCrawlingHandler handler = new TableCrawlingHandler(null);
+        LocalDate noMatchDate = LocalDate.of(2025, 1, 1);
+
+        // when
+        List<Post> result = handler.handle(doc, siteInfo, noMatchDate);
+
+        // then
+        assertThat(result).isEmpty();
+    }
+
+    @DisplayName("키워드가 포함된 게시글이 없을 때 빈 목록을 반환한다")
+    @Test
+    void no_matching_keyword() {
+        // given
+        Site siteWithDifferentKeyword = Site.create("test-url", 1, 3);
+        Keyword keyword = Keyword.create("존재하지않는키워드");
+        SiteKeyword siteKeyword = SiteKeyword.create(siteWithDifferentKeyword, keyword);
+        siteWithDifferentKeyword.getSiteKeywords().add(siteKeyword);
+
+        TableCrawlingHandler handler = new TableCrawlingHandler(null);
+
+        // when
+        List<Post> result = handler.handle(doc, siteWithDifferentKeyword, testDate);
+
+        // then
+        assertThat(result).isEmpty();
+    }
+
+    @DisplayName("doc 이 null인 경우 예외를 던진다")
+    @Test
+    void doc_null() {
+        // given
+        TableCrawlingHandler handler = new TableCrawlingHandler(null);
+
+        // when // then
+        assertThatThrownBy(() -> handler.handle(null, siteInfo, testDate))
+                .isInstanceOf(CrawlingParseException.class)
+                .hasMessageContaining("Document cannot be null");
+    }
+
+    @DisplayName("지원하지 않는 형식의 문서가 들어오면 다음 핸들러로 위임한다")
+    @Test
+    void handle_delegates_to_next_handler() {
+        // given
+        CrawlingHandler mockNextHandler = Mockito.mock(CrawlingHandler.class);
+        List<Post> expectedResult = List.of(Post.createPost("Test Post", testDate));
+        when(mockNextHandler.handle(emptyDoc, siteInfo, testDate)).thenReturn(expectedResult);
+
+        TableCrawlingHandler handler = new TableCrawlingHandler(mockNextHandler);
+
+        // when
+        List<Post> result = handler.handle(emptyDoc, siteInfo, testDate);
+
+        // then
+        assertThat(result).isEqualTo(expectedResult);
+        Mockito.verify(mockNextHandler).handle(emptyDoc, siteInfo, testDate);
+    }
+
+    @DisplayName("다음 핸들러가 존재하지 않는다면 지원하지 않는 문서형식 예외를 던진다")
+    @Test
+    void handle_throws_exception_when_no_next_handler() {
+        // given
+        TableCrawlingHandler handler = new TableCrawlingHandler(null);
+
+        // when & then
+        assertThatThrownBy(() -> handler.handle(emptyDoc, siteInfo, testDate))
+                .isInstanceOf(CrawlingParseException.class)
+                .hasMessageContaining("Unsupported document format for " + siteInfo.getUrl());
+    }
+}

@@ -33,7 +33,7 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 
 	// Web Crawling
-	implementation 'org.jsoup:jsoup:1.17.2'
+	implementation 'org.jsoup:jsoup:1.21.1'
 
 	// Scheduler
 	implementation 'org.springframework.boot:spring-boot-starter-quartz'
