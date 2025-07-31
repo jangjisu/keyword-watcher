@@ -1,6 +1,7 @@
 package com.app.keywordwatcher.domain.site;
 
 import com.app.keywordwatcher.domain.BaseEntity;
+import com.app.keywordwatcher.domain.keyword.Keyword;
 import com.app.keywordwatcher.domain.sitekeyword.SiteKeyword;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,7 +25,7 @@ public class Site extends BaseEntity {
 
     private int createAtPosition;
 
-    @OneToMany(mappedBy = "site", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "site", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SiteKeyword> siteKeywords = new ArrayList<>();
 
     private Site(String url, int titlePosition, int createAtPosition) {
@@ -37,5 +38,24 @@ public class Site extends BaseEntity {
         return new Site(url, titlePosition, createAtPosition);
     }
 
+    public void addSiteKeyword(Keyword keyword) {
+        SiteKeyword siteKeyword = SiteKeyword.create(this, keyword);
+        this.siteKeywords.add(siteKeyword);
+    }
 
+    public void removeSiteKeyword(Keyword keyword) {
+        this.siteKeywords.removeIf(siteKeyword ->
+                siteKeyword.getKeyword().equals(keyword));
+    }
+
+    public void replaceSiteKeywords(List<Keyword> newKeywords) {
+        // 기존 방식: 전체 clear 후 재추가 (고아 제거로 자동 삭제)
+        this.siteKeywords.clear();
+
+        // 새 키워드들 추가
+        newKeywords.forEach(keyword -> {
+            SiteKeyword siteKeyword = SiteKeyword.create(this, keyword);
+            this.siteKeywords.add(siteKeyword);
+        });
+    }
 }
