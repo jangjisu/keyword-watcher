@@ -28,7 +28,6 @@ class TableCrawlingHandlerTest {
     static LocalDate testDate = LocalDate.of(2025, 7, 16);
 
     Document emptyDoc = Jsoup.parse("<html><body></body></html>");
-    Document emptyTableDoc = Jsoup.parse("<html><body><table><tbody></tbody></table></body></html>");
 
     @BeforeAll
     static void setUp() throws IOException {
