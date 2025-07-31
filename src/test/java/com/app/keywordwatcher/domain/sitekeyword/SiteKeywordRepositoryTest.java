@@ -52,7 +52,7 @@ class SiteKeywordRepositoryTest {
             .containsExactlyInAnyOrder("서울", "부산");
 
         assertThat(site2Keywords).hasSize(1)
-        .extracting(sk -> sk.getKeyword().getKeyText())
+            .extracting(sk -> sk.getKeyword().getKeyText())
             .containsExactly("대구");
     }
 }
