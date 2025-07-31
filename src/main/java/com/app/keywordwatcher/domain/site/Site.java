@@ -49,10 +49,8 @@ public class Site extends BaseEntity {
     }
 
     public void replaceSiteKeywords(List<Keyword> newKeywords) {
-        // 기존 방식: 전체 clear 후 재추가 (고아 제거로 자동 삭제)
         this.siteKeywords.clear();
 
-        // 새 키워드들 추가
         newKeywords.forEach(keyword -> {
             SiteKeyword siteKeyword = SiteKeyword.create(this, keyword);
             this.siteKeywords.add(siteKeyword);
