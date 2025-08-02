@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko" style="overflow:hidden">
+<head>
+    <title> 입법/고시/공고 목록 </title>
+    <script type="text/javascript" src="/emwp/js/cmm/jsp/calendar.js"></script>
+    <script type="text/javascript" src="/emwp/js/cmm/jsp/common.js"></script>
+    <script type="text/javascript" src="/emwp/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://www.gangnam.go.kr/css/sub_common.css">
+    <style type="text/css">
+        * { font-size:13px;font-family: "Nanum Gothic","나눔고딕","ng","맑은 고딕","malgun gothic","AppleGothic","dotum";}
+        .paging_new table { width:auto; margin:0 auto;}
+
+        .btn_reset3 { background: #3669d4; width: 56px; height: 22px;text-align: center; line-height:22px; border:none; color:#fff; font-weight:bold; cursor:pointer; font-family: "돋움,Arial"; display:inline-block;}
+        .btn_reset3 a { color:#fff; text-decoration:none; vertical-align:middle; font-family: "돋움,Arial";}
+
+        body{
+            margin:0px;
+            overflow-y:auto;
+            overflow-x:hidden;
+        }
+        .paging_con{text-align: center; margin: 30px 0 0 0;}
+        .paging_con a{
+            border: 1px solid #ccc;
+            min-width: 26px;
+            height: 29px;
+            display: inline-block;
+            line-height: 1.8em;
+            margin:0 2px 0 2px;
+        }
+        .paging_con a.select{
+            background: #444;
+            color: #fff;
+        }
+        .paging_con a.navi_btn{
+            border:none;
+            margin:0;
+        }
+        .paging_con img{
+            margin:0 5px 0 5px;
+        }
+    </style>
+    <script type="text/javascript">
+        //-------------------------------------------------------------------
+        // 설명   : 초기화
+        //-------------------------------------------------------------------
+        function init() {
+            var f = document.form;
+            var ck = 'gov.mogaha.ntis.cmm.util.Page@59526830';
+            if(ck=="null"){
+                srchList();
+            }
+
+        }
+        //-------------------------------------------------------------------
+        // 설명   : 고시공고 목록 조회
+        //-------------------------------------------------------------------
+        function search(){
+            var f = document.form;
+            var str = f.not_ancmt_sj.value;
+
+            if(str != null && str != ''){
+                var len = str.length;
+                if(len > 0 ){
+                    for(var i=0;i<len;i++){
+                        if(isEtcChar(str.charAt(i))){
+                            alert('특수문자 입력할 수 없습니다');
+                            f.not_ancmt_sj.focus();
+                            return;
+                        }
+                    }
+                }
+            }
+
+            f.target = "_self";
+            f.action = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do";
+            f.method.value   = 'selectListOfrNotAncmt'; //Action
+            f.methodnm.value = 'selectListOfrNotAncmtHomepage';
+            f.submit();
+        }
+        //-------------------------------------------------------------------
+        // 설명   : 검색버튼 클릭시 페이지정보 초기화 하고 조회
+        //-------------------------------------------------------------------
+        function srchList(){
+            document.form.pageIndex.value=""; //페이지 인덱스 초기화
+            search();
+        }
+        //-------------------------------------------------------------------
+        // 설명   : 페이지 이동시 조회
+        //-------------------------------------------------------------------
+        function goPage() {
+            search();
+        }
+        //-------------------------------------------------------------------
+        // 설명   : 고시공고 상세내용 조회
+        //-------------------------------------------------------------------
+        function searchDetail(not_ancmt_mgt_no) {
+            var f = document.form;
+            f.not_ancmt_mgt_no.value = not_ancmt_mgt_no ;
+            f.target = "_self";
+            f.action = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do";
+            f.method.value   = 'selectOfrNotAncmt'; //Action
+            f.methodnm.value = 'selectOfrNotAncmtRegst';
+            f.submit();
+
+        }
+        //-------------------------------------------------------------------
+        // 설명   : 엔터 눌렀을 때, 검색버튼 클릭시와 같은 기능
+        //-------------------------------------------------------------------
+        function enterKey(){
+            var key = event.keyCode;
+            if( key == 13 ){
+                srchList();
+            }
+        }
+        //-------------------------------------------------------------------
+        // 설명   : 고시공고 예전 자료 보기 조회
+        //-------------------------------------------------------------------
+        function changeDetail() {
+            var url = "http://bukgu.gwangju.kr/phps/board/board_srh.php?b_code=LAW_NOTICE";
+            window.open(url,"viewDetail","toolbar=no,location=no,diretories=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=700,height=670");
+        }
+
+    </script>
+</head>
+<body>
+<form name="form" method="post" onsubmit="return false;">
+    <input type="hidden" name="pageIndex" value=""> <input type="hidden" name="jndinm" value="OfrNotAncmtEJB"> <input type="hidden" name="context" value="NTIS"> <input type="hidden" name="method" value=""> <input type="hidden" name="methodnm" value=""> <input type="hidden" name="not_ancmt_mgt_no" value=""> <input type="hidden" name="homepage_pbs_yn" value="Y"> <input type="hidden" name="subCheck" value="Y"> <input type="hidden" name="ofr_pageSize" value="10"> <input type="hidden" name="not_ancmt_se_code" value="05"> <input type="hidden" name="cha_dep_code_nm" value=""> <input type="hidden" name="countYn" value="Y">
+    <fieldset class="clearfix">
+        <legend>게시물 검색</legend>
+        <div class="board_search2" style="overflow:hidden">
+            <ul>
+                <li><label for="">제 목</label> <input type="text" name="not_ancmt_sj" onkeypress="javascript:enterKey()" class="input_txt" size="16" value="" style="width:540px"></li>
+            </ul>
+            <p class="fr"><span class="btn_reset3"><a href="#" onclick="javascript:srchList();">검색</a></span></p>
+        </div>
+    </fieldset>
+</form>
+<div class="tot">
+    <ul>
+        <li>전체게시물:39개</li>
+        <li class="last">페이지:1/4</li>
+    </ul>
+</div>
+<div class="board_list">
+    <table cellpadding="0" cellspacing="0" style="width:100%;" summary="민원서식 게시판 입니다.">
+        <caption>게시판 목록</caption>
+        <colgroup>
+            <col width="6%">
+            <col width="20%">
+            <col width="*">
+            <col width="12%">
+            <col width="12%">
+            <col width="8%">
+        </colgroup>
+        <thead>
+        <tr>
+            <th scope="col">번호</th>
+            <th scope="col">고시공고번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">담당부서</th>
+            <th scope="col">등록일</th>
+            <th scope="col" class="last">조회수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="text-align:center" height="22">39</td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59903'); return false;" style="text-align:left">공고 제2025-1828호</a></td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59903'); return false;" style="text-align:left">서울특별시 강남구 농지이용관리지원 기간제근로자 채용 서류전형 합격자 공고</a></td>
+            <td style="text-align:center">지역경제과</td>
+            <td style="text-align:center">2025-08-01</td>
+            <td style="text-align:center">0</td>
+        </tr>
+        <tr>
+            <td style="text-align:center" height="22">38</td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59844'); return false;" style="text-align:left">공고 제2025-1798호</a></td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59844'); return false;" style="text-align:left">2025년 제3차 강남문화재단 직원 공개채용 모집 공고</a></td>
+            <td style="text-align:center">문화도시과</td>
+            <td style="text-align:center">2025-07-31</td>
+            <td style="text-align:center">7</td>
+        </tr>
+        <tr>
+            <td style="text-align:center" height="22">37</td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59846'); return false;" style="text-align:left">강남구인사위원회 공고 제2025-774호</a></td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59846'); return false;" style="text-align:left">강남구 시간선택제마급(금연상담사) 채용공고</a></td>
+            <td style="text-align:center">보건행정과</td>
+            <td style="text-align:center">2025-07-30</td>
+            <td style="text-align:center">2</td>
+        </tr>
+        <tr>
+            <td style="text-align:center" height="22">36</td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59799'); return false;" style="text-align:left">인사위원회 공고 제2025-771호</a></td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59799'); return false;" style="text-align:left">서울특별시 강남구 시간선택제마급(영양사) 채용계획 공고</a></td>
+            <td style="text-align:center">보건행정과</td>
+            <td style="text-align:center">2025-07-30</td>
+            <td style="text-align:center">0</td>
+        </tr>
+        <tr>
+            <td style="text-align:center" height="22">35</td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59863'); return false;" style="text-align:left">공고 제2025-1808호</a></td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59863'); return false;" style="text-align:left">서울특별시 강남구 시간선택제임기제공무원(평생교육-마급) 채용 최종합격자 ...</a></td>
+            <td style="text-align:center">교육지원과</td>
+            <td style="text-align:center">2025-07-29</td>
+            <td style="text-align:center">2</td>
+        </tr>
+        <tr>
+            <td style="text-align:center" height="22">34</td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59860'); return false;" style="text-align:left">공고 제2025-1805호</a></td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59860'); return false;" style="text-align:left">강남구보건소 청소년정신건강증진사업 기간제근로자 채용공고</a></td>
+            <td style="text-align:center">건강관리과</td>
+            <td style="text-align:center">2025-07-29</td>
+            <td style="text-align:center">1</td>
+        </tr>
+        <tr>
+            <td style="text-align:center" height="22">33</td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59853'); return false;" style="text-align:left">공고 제2025-1803호</a></td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59853'); return false;" style="text-align:left">서울특별시 강남구 일반임기제공무원(도시계획분야) 최종합격자 공고</a></td>
+            <td style="text-align:center">혁신전략과</td>
+            <td style="text-align:center">2025-07-29</td>
+            <td style="text-align:center">5</td>
+        </tr>
+        <tr>
+            <td style="text-align:center" height="22">32</td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59856'); return false;" style="text-align:left">인사위원회 공고 제2025-777호</a></td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59856'); return false;" style="text-align:left">시간선택제임기제공무원마급 무허가시설물 단속 및 정비 분야 채용 공고</a></td>
+            <td style="text-align:center">공간개발과</td>
+            <td style="text-align:center">2025-07-29</td>
+            <td style="text-align:center">10</td>
+        </tr>
+        <tr>
+            <td style="text-align:center" height="22">31</td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59842'); return false;" style="text-align:left">공고 제2025-1796호</a></td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59842'); return false;" style="text-align:left">2025년 제3차 구립체육시설(체육사업1팀) 단임지도직 공개경쟁채용 공고</a></td>
+            <td style="text-align:center">생활체육과</td>
+            <td style="text-align:center">2025-07-28</td>
+            <td style="text-align:center">0</td>
+        </tr>
+        <tr>
+            <td style="text-align:center" height="22">30</td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59848'); return false;" style="text-align:left">인사위원회 공고 제2025-775호</a></td>
+            <td style="text-align:left;padding-left:5px;"><a href="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do" onclick="javascript:searchDetail('59848'); return false;" style="text-align:left">서울특별시 강남구 시간선택제임기제공무원(마급) 채용 공고</a></td>
+            <td style="text-align:center">세무관리과</td>
+            <td style="text-align:center">2025-07-28</td>
+            <td style="text-align:center">8</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div id="paging">
+    <div class="paging_con">
+        <table border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+            <tr>
+                <td><img src="/emwp/img/icon/icon_prevend.gif" width="13" height="13" border="0" alt="첫 페이지로 이동"></td>
+                <td width="3"></td>
+                <td width="28"><img src="/emwp/img/icon/icon_prev.gif" border="0" alt="이전 페이지로 이동"></td>
+                <td><span class="page_no"><font><b>1</b></font></span> <span class="page_sep">|</span> <span class="page_no"><a href="#" onclick="javascript:document.form.pageIndex.value=2;goPage()">2</a></span> <span class="page_sep">|</span> <span class="page_no"><a href="#" onclick="javascript:document.form.pageIndex.value=3;goPage()">3</a></span> <span class="page_sep">|</span> <span class="page_no"><a href="#" onclick="javascript:document.form.pageIndex.value=4;goPage()">4</a></span></td>
+                <td width="28" align="right"><a href="#" onclick="javascript:document.form.pageIndex.value=2;goPage()"><img src="/emwp/img/icon/icon_next.gif" border="0" alt="다음 페이지로 이동"></a></td>
+                <td width="3"></td>
+                <td width="20"><img src="/emwp/img/icon/icon_nextend.gif" width="13" height="13" border="0" alt="마지막 페이지로 이동"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
