@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -27,6 +28,9 @@ class SiteRepositoryTest {
     @Autowired
     private SiteKeywordRepository siteKeywordRepository;
 
+    @Autowired
+    private TestEntityManager entityManager;
+
     @DisplayName("Site 저장 시 SiteKeyword도 함께 저장된다")
     @Test
     void save_site_with_keywords() {
@@ -45,8 +49,8 @@ class SiteRepositoryTest {
         // then
         List<SiteKeyword> siteKeywords = siteKeywordRepository.findBySiteId(savedSite.getId());
         assertThat(siteKeywords).hasSize(2)
-            .extracting(sk -> sk.getKeyword().getKeyText())
-            .containsExactlyInAnyOrder("서울", "부산");
+                .extracting(sk -> sk.getKeyword().getKeyText())
+                .containsExactlyInAnyOrder("서울", "부산");
     }
 
     @DisplayName("Site가 삭제되면 연관된 SiteKeyword도 함께 삭제된다")
@@ -80,18 +84,20 @@ class SiteRepositoryTest {
         site.addSiteKeyword(keyword1);
         site.addSiteKeyword(keyword2);
         Site savedSite = siteRepository.save(site);
+        entityManager.flush();
 
         // when
-        savedSite.removeSiteKeyword(keyword1);
-        savedSite.addSiteKeyword(keyword3);
-        siteRepository.save(savedSite);
+        Site reloadedSite = siteRepository.findById(savedSite.getId()).orElseThrow();
+        reloadedSite.removeSiteKeyword(keyword1);
+        reloadedSite.addSiteKeyword(keyword3);
+        siteRepository.save(reloadedSite);
 
         // then
         List<SiteKeyword> updatedKeywords = siteKeywordRepository.findBySiteId(savedSite.getId());
         assertThat(updatedKeywords).hasSize(2);
         assertThat(updatedKeywords)
-            .extracting(sk -> sk.getKeyword().getKeyText())
-            .containsExactlyInAnyOrder("부산", "대구");
+                .extracting(sk -> sk.getKeyword().getKeyText())
+                .containsExactlyInAnyOrder("부산", "대구");
     }
 
     @DisplayName("replaceSiteKeywords로 SiteKeyword목록을 교체할 수 있다")
@@ -107,17 +113,19 @@ class SiteRepositoryTest {
         site.addSiteKeyword(keyword1);
         site.addSiteKeyword(keyword2);
         Site savedSite = siteRepository.save(site);
+        entityManager.flush();
 
         // when
+        Site reloadedSite = siteRepository.findById(savedSite.getId()).orElseThrow();
         List<Keyword> newKeywords = List.of(keyword1, keyword3, keyword4);
-        savedSite.replaceSiteKeywords(newKeywords);
-        siteRepository.save(savedSite);
+        reloadedSite.replaceSiteKeywords(newKeywords);
+        siteRepository.save(reloadedSite);
 
-        // then - DB에 올바르게 반영되었는지 확인
+        // then
         List<SiteKeyword> result = siteKeywordRepository.findBySiteId(savedSite.getId());
         assertThat(result).hasSize(3);
         assertThat(result)
-            .extracting(sk -> sk.getKeyword().getKeyText())
-            .containsExactlyInAnyOrder("서울", "대구", "인천");
+                .extracting(sk -> sk.getKeyword().getKeyText())
+                .containsExactlyInAnyOrder("서울", "대구", "인천");
     }
 }
