@@ -22,21 +22,21 @@ public class CrawlingUtil {
         CrawlingUtil.connectionProperties = connectionProperties;
     }
 
-    public static Connection createSecureConnection(String url) {
+    public static Document fetchDocument(String url) throws IOException {
+        validateUrl(url);
+
+        try {
+            return createConnection(url).get();
+        } catch (IOException e) {
+            throw new IOException("Failed to retrieve document from URL: " + url, e);
+        }
+    }
+
+    private static Connection createConnection(String url) {
         return Jsoup.connect(url)
                 .userAgent(connectionProperties.getUserAgent())
                 .timeout((int) connectionProperties.getTimeout().toMillis())
                 .maxBodySize(connectionProperties.getMaxBodySize());
-    }
-
-    public static Document getDocument(String url) throws IOException {
-        validateUrl(url);
-
-        try {
-            return createSecureConnection(url).get();
-        } catch (IOException e) {
-            throw new IOException("Failed to retrieve document from URL: " + url, e);
-        }
     }
 
     private static void validateUrl(String url) {

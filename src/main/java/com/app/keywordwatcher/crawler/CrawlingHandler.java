@@ -57,7 +57,7 @@ public abstract class CrawlingHandler {
     }
 
     public List<Post> handle(Site siteInfo, LocalDate date) throws IOException {
-        Document doc = CrawlingUtil.getDocument(siteInfo.getUrl());
+        Document doc = CrawlingUtil.fetchDocument(siteInfo.getUrl());
         log.info("Crawling document from URL: {}", siteInfo.getUrl());
         return handle(doc, siteInfo, date);
     }
@@ -76,11 +76,13 @@ public abstract class CrawlingHandler {
         }
 
         String title = tds.get(titleIdx).text();
-        System.out.println("Title: " + title);
-        LocalDate createdAt = DateUtil.parseDate(tds.get(dateIdx).text());
+        String dateText = tds.get(dateIdx).text();
 
-        if (!createdAt.equals(date)) return Optional.empty();
+        Optional<LocalDate> createAt = DateUtil.parseDate(dateText);
+        if (createAt.isEmpty() || !createAt.get().equals(date)) {
+            return Optional.empty();
+        }
 
-        return Optional.of(Post.createPost(title, createdAt));
+        return Optional.of(Post.createPost(title, createAt.get()));
     }
 }

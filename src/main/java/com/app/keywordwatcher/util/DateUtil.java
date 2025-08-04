@@ -1,35 +1,38 @@
 package com.app.keywordwatcher.util;
 
-import com.app.keywordwatcher.exception.DateParseException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
+@Slf4j
 public class DateUtil {
     private DateUtil() {
     }
 
-    public static LocalDate parseDate(String dateString) {
+    public static Optional<LocalDate> parseDate(String dateString) {
         if (dateString == null || dateString.isEmpty()) {
-            return LocalDate.MIN;
+            return Optional.empty();
         }
 
         String digits = dateString.replaceAll("\\D", "");
         try {
             return switch (digits.length()) {
-                case 6 -> LocalDate.of(
+                case 6 -> Optional.of(LocalDate.of(
                         2000 + Integer.parseInt(digits.substring(0, 2)),
                         Integer.parseInt(digits.substring(2, 4)),
                         Integer.parseInt(digits.substring(4, 6))
-                );
-                case 8 -> LocalDate.of(
+                ));
+                case 8 -> Optional.of(LocalDate.of(
                         Integer.parseInt(digits.substring(0, 4)),
                         Integer.parseInt(digits.substring(4, 6)),
                         Integer.parseInt(digits.substring(6, 8))
-                );
-                default -> throw new DateParseException("Unparseable date: " + dateString);
+                ));
+                default -> Optional.empty();
             };
         } catch (RuntimeException e) {
-            return LocalDate.MIN;
+            log.warn("Failed to parse date from string: {}, Error: {}", dateString, e.getMessage());
+            return Optional.empty();
         }
     }
 }

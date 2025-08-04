@@ -77,7 +77,7 @@ class IframeCrawlingHandlerTest {
     @Test
     void matching_posts_date() {
         // given
-        crawlingUtilMock.when(() -> CrawlingUtil.getDocument(anyString())).thenReturn(iframeDoc);
+        crawlingUtilMock.when(() -> CrawlingUtil.fetchDocument(anyString())).thenReturn(iframeDoc);
         IframeCrawlingHandler handler = new IframeCrawlingHandler(null);
 
         // when
@@ -93,7 +93,7 @@ class IframeCrawlingHandlerTest {
     @Test
     void no_matching_date() {
         // given
-        crawlingUtilMock.when(() -> CrawlingUtil.getDocument(anyString())).thenReturn(iframeDoc);
+        crawlingUtilMock.when(() -> CrawlingUtil.fetchDocument(anyString())).thenReturn(iframeDoc);
         IframeCrawlingHandler handler = new IframeCrawlingHandler(null);
         LocalDate noMatchDate = LocalDate.of(2025, 1, 1);
 
@@ -108,7 +108,7 @@ class IframeCrawlingHandlerTest {
     @Test
     void no_matching_keyword() {
         // given
-        crawlingUtilMock.when(() -> CrawlingUtil.getDocument(anyString())).thenReturn(iframeDoc);
+        crawlingUtilMock.when(() -> CrawlingUtil.fetchDocument(anyString())).thenReturn(iframeDoc);
 
         Site siteWithDifferentKeyword = Site.create("test-url", 1, 3);
         Keyword keyword = Keyword.create("존재하지않는키워드");

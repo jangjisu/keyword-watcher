@@ -43,7 +43,7 @@ public class IframeCrawlingHandler extends CrawlingHandler {
         }
 
         try {
-            Document iframeDoc = CrawlingUtil.getDocument(iframeUrl);
+            Document iframeDoc = CrawlingUtil.fetchDocument(iframeUrl);
             Elements rows = iframeDoc.select("table tbody tr");
 
             if (!rows.isEmpty()) {
