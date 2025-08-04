@@ -28,17 +28,6 @@ public class CrawlingConfig {
         @Value("${crawling.connection.max-body-size:10485760}")
         private int maxBodySize;
 
-        public void setUserAgent(String userAgent) {
-            this.userAgent = userAgent;
-        }
-
-        public void setTimeout(Duration timeout) {
-            this.timeout = timeout;
-        }
-
-        public void setMaxBodySize(int maxBodySize) {
-            this.maxBodySize = maxBodySize;
-        }
     }
 
     @Bean
