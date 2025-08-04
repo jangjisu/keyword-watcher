@@ -10,7 +10,7 @@ public class DateUtil {
 
     public static LocalDate parseDate(String dateString) {
         if (dateString == null || dateString.isEmpty()) {
-            throw new DateParseException("Unparseable date: " + dateString);
+            return LocalDate.MIN;
         }
 
         String digits = dateString.replaceAll("\\D", "");
@@ -29,7 +29,7 @@ public class DateUtil {
                 default -> throw new DateParseException("Unparseable date: " + dateString);
             };
         } catch (RuntimeException e) {
-            throw new DateParseException("Unparseable date: " + dateString + " - " + e.getMessage(), e);
+            return LocalDate.MIN;
         }
     }
 }
