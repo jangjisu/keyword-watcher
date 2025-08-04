@@ -5,29 +5,41 @@ import com.app.keywordwatcher.domain.post.Post;
 import com.app.keywordwatcher.domain.site.Site;
 import com.app.keywordwatcher.domain.sitekeyword.SiteKeyword;
 import com.app.keywordwatcher.exception.CrawlingParseException;
+import com.app.keywordwatcher.util.CrawlingUtil;
 import com.app.keywordwatcher.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Slf4j
 public abstract class CrawlingHandler {
     protected final CrawlingHandler nextHandler;
 
     public List<Post> handle(Document doc, Site siteInfo, LocalDate date) {
-        if (!supports(doc)) {
+        if (doc == null) {
+            throw new CrawlingParseException("Document cannot be null");
+        }
+
+        Elements rows = extractRows(doc);
+        for (Element row : rows) {
+            log.info("Crawling row: {}", row.text());
+        }
+
+        if (rows.isEmpty()) {
             if (nextHandler == null) {
                 throw new CrawlingParseException("Unsupported document format for " + siteInfo.getUrl());
             }
             return nextHandler.handle(doc, siteInfo, date);
         }
 
-        List<Element> rows = extractRows(doc); // 추출 포인트만 서브 클래스에서 변경
         List<Post> datePosts = rows.stream()
                 .map(el -> mapToPostIfMatchDate(el, siteInfo, date))
                 .filter(Optional::isPresent)
@@ -44,9 +56,13 @@ public abstract class CrawlingHandler {
                 .toList();
     }
 
-    protected abstract boolean supports(Document doc);
+    public List<Post> handle(Site siteInfo, LocalDate date) throws IOException {
+        Document doc = CrawlingUtil.getDocument(siteInfo.getUrl());
+        log.info("Crawling document from URL: {}", siteInfo.getUrl());
+        return handle(doc, siteInfo, date);
+    }
 
-    protected abstract List<Element> extractRows(Document doc);
+    protected abstract Elements extractRows(Document doc);
 
     private Optional<Post> mapToPostIfMatchDate(Element element, Site siteInfo, LocalDate date) {
         Elements tds = element.select("td");
@@ -60,6 +76,7 @@ public abstract class CrawlingHandler {
         }
 
         String title = tds.get(titleIdx).text();
+        System.out.println("Title: " + title);
         LocalDate createdAt = DateUtil.parseDate(tds.get(dateIdx).text());
 
         if (!createdAt.equals(date)) return Optional.empty();
@@ -67,4 +84,3 @@ public abstract class CrawlingHandler {
         return Optional.of(Post.createPost(title, createdAt));
     }
 }
-

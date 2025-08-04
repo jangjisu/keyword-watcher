@@ -1,26 +1,24 @@
 package com.app.keywordwatcher.crawler;
 
-import com.app.keywordwatcher.exception.CrawlingParseException;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import java.util.List;
-
+@Slf4j
 public class TableCrawlingHandler extends CrawlingHandler {
     public TableCrawlingHandler(CrawlingHandler nextHandler) {
         super(nextHandler);
     }
 
     @Override
-    protected boolean supports(Document doc) {
-        if (doc == null) {
-            throw new CrawlingParseException("Document cannot be null");
-        }
-        return !doc.select("table tbody tr").isEmpty();
-    }
+    protected Elements extractRows(Document doc) {
 
-    @Override
-    protected List<Element> extractRows(Document doc) {
-        return doc.select("table tbody tr");
+        Elements tableElements = doc.select("table tbody tr");
+
+        if (!tableElements.isEmpty()) {
+            log.info("TableCrawlingHandler extract rows: Found {} rows in the document", tableElements.size());
+        }
+
+        return tableElements;
     }
 }
