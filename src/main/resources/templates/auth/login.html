@@ -158,7 +158,11 @@
         function showAlert(message, type) {
             const alertContainer = document.getElementById('alertContainer');
             const alertClass = type === 'error' ? 'alert-error' : 'alert-success';
-            alertContainer.innerHTML = '<div class="alert ' + alertClass + '">' + message + '</div>';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert ' + alertClass;
+            alertDiv.textContent = message;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertDiv);
         }
 
         // Enter 키로 로그인 실행

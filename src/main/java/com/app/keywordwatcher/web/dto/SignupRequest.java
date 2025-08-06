@@ -12,4 +12,8 @@ public class SignupRequest {
     private String email;
     private String password;
     private String confirmPassword;
+
+    public boolean isPasswordNonMatch() {
+        return !password.equals(confirmPassword);
+    }
 }
