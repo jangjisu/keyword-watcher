@@ -9,9 +9,11 @@ import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -36,11 +38,11 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
-    public static User create(String userId, String email, String password) {
+    public static User create(String userId, String email, String password, PasswordEncoder passwordEncoder) {
         User user = new User();
         user.userId = userId;
         user.email = email;
-        user.password = password;
+        user.password = Objects.requireNonNull(passwordEncoder.encode(password));
         user.role = Role.USER;
         return user;
     }

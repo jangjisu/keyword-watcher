@@ -23,7 +23,7 @@ import java.util.Optional;
 public abstract class CrawlingHandler {
     protected final CrawlingHandler nextHandler;
 
-    public List<Post> handle(Document doc, Site siteInfo, LocalDate date) {
+    protected List<Post> handle(Document doc, Site siteInfo, LocalDate date) {
         if (doc == null) {
             throw new CrawlingParseException("Document cannot be null");
         }
