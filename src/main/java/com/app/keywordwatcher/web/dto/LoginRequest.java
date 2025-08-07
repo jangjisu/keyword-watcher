@@ -1,12 +1,8 @@
 package com.app.keywordwatcher.web.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class LoginRequest {
     private String username;
     private String password;

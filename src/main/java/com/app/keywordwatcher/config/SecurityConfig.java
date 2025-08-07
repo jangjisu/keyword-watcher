@@ -40,8 +40,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/css/**", "/js/**", "/h2-console/**",
-                                "/api/public/**", "/public/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/h2-console/**", "/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -50,15 +49,15 @@ public class SecurityConfig {
                         .maxSessionsPreventsLogin(false)
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
+                        .loginPage("/public/login")
                         .defaultSuccessUrl("/", true)
-                        .failureUrl("/login?error=true")
+                        .failureUrl("/public/login?error=true")
                         .permitAll()
                 )
                 .logout(AbstractHttpConfigurer::disable)
                 .userDetailsService(userDetailsService)
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**", "/api/public/**", "public/**")
+                        .ignoringRequestMatchers("/h2-console/**", "/api/public/**", "/public/**")
                 )
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)

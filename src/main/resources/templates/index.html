@@ -82,7 +82,7 @@
             fetch('/api/user')
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success && data.data && data.data.authenticated) {
+                    if (data.code === 200 && data.data) {
                         document.getElementById('username').textContent = data.data.username;
                         document.getElementById('userInfo').style.display = 'inline';
                         document.getElementById('logoutBtn').style.display = 'inline';
@@ -108,15 +108,15 @@
                 }
             })
             .then(data => {
-                if (data && data.success) {
-                    window.location.href = '/login?logout=true';
+                if (data && data.code === 200) {
+                    window.location.href = '/public/login?logout=true';
                 } else {
-                    alert('로그아웃 중 오류가 발생했습니다: ' + (data.message || '알 수 없는 오류'));
+                    alert('로그아웃 중 오류가 발생했습니다: ' + (data?.message || '알 수 없는 오류'));
                 }
             })
             .catch(error => {
                 console.error('Error during logout:', error);
-                window.location.href = '/login?logout=true';
+                window.location.href = '/public/login?logout=true';
             });
         }
     </script>
