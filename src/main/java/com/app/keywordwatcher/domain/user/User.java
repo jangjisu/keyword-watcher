@@ -1,6 +1,7 @@
 package com.app.keywordwatcher.domain.user;
 
 import com.app.keywordwatcher.domain.BaseEntity;
+import com.app.keywordwatcher.web.dto.SignupRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -47,6 +48,10 @@ public class User extends BaseEntity implements UserDetails {
         return user;
     }
 
+    public static User create(SignupRequest request, PasswordEncoder passwordEncoder) {
+        return User.create(request.getUserId(), request.getEmail(), request.getPassword(), passwordEncoder);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
@@ -54,7 +59,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userId; // 이제 userId를 username으로 사용
+        return userId;
     }
 
 
