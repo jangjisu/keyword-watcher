@@ -1,13 +1,16 @@
 package com.app.keywordwatcher.web.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class UserResponse {
     private String username;
-    private boolean authenticated;
+
+    public static UserResponse create(String username) {
+        return new UserResponse(username);
+    }
 }
