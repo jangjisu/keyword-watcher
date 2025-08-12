@@ -1,5 +1,6 @@
 package com.app.keywordwatcher.domain.site;
 
+import com.app.keywordwatcher.domain.RepositoryTestSupport;
 import com.app.keywordwatcher.domain.keyword.Keyword;
 import com.app.keywordwatcher.domain.keyword.KeywordRepository;
 import com.app.keywordwatcher.domain.sitekeyword.SiteKeyword;
@@ -7,7 +8,6 @@ import com.app.keywordwatcher.domain.sitekeyword.SiteKeywordRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +15,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
 @Transactional
-class SiteRepositoryTest {
+class SiteRepositoryTest extends RepositoryTestSupport {
 
     @Autowired
     private SiteRepository siteRepository;

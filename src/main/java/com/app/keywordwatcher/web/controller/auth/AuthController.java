@@ -1,11 +1,12 @@
 package com.app.keywordwatcher.web.controller.auth;
 
 import com.app.keywordwatcher.web.controller.ApiResponse;
-import com.app.keywordwatcher.web.dto.LoginRequest;
-import com.app.keywordwatcher.web.dto.SignupRequest;
+import com.app.keywordwatcher.web.controller.auth.request.LoginRequest;
+import com.app.keywordwatcher.web.controller.auth.request.SignupRequest;
 import com.app.keywordwatcher.web.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,13 +22,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/api/login")
-    public ApiResponse<Boolean> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+    public ApiResponse<Boolean> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         authService.login(request, httpRequest);
         return ApiResponse.success(true);
     }
 
     @PostMapping("/api/signup")
-    public ApiResponse<Long> signup(@RequestBody SignupRequest request) {
+    public ApiResponse<Long> signup(@Valid @RequestBody SignupRequest request) {
         return ApiResponse.success(authService.signUp(request));
     }
 
