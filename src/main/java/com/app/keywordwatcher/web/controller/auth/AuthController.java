@@ -5,6 +5,7 @@ import com.app.keywordwatcher.web.dto.LoginRequest;
 import com.app.keywordwatcher.web.dto.SignupRequest;
 import com.app.keywordwatcher.web.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,8 +32,8 @@ public class AuthController {
     }
 
     @PostMapping("/api/logout")
-    public ApiResponse<Boolean> logout(HttpServletRequest request) {
-        authService.logout(request);
+    public ApiResponse<Boolean> logout(HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(request, response);
 
         return ApiResponse.success(true);
     }
