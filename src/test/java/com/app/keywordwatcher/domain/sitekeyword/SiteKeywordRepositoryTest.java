@@ -1,5 +1,6 @@
 package com.app.keywordwatcher.domain.sitekeyword;
 
+import com.app.keywordwatcher.domain.RepositoryTestSupport;
 import com.app.keywordwatcher.domain.keyword.Keyword;
 import com.app.keywordwatcher.domain.keyword.KeywordRepository;
 import com.app.keywordwatcher.domain.site.Site;
@@ -7,16 +8,14 @@ import com.app.keywordwatcher.domain.site.SiteRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
 @Transactional
-class SiteKeywordRepositoryTest {
+class SiteKeywordRepositoryTest extends RepositoryTestSupport {
 
     @Autowired
     private SiteKeywordRepository siteKeywordRepository;
@@ -48,11 +47,11 @@ class SiteKeywordRepositoryTest {
 
         // then
         assertThat(site1Keywords).hasSize(2)
-            .extracting(sk -> sk.getKeyword().getKeyText())
-            .containsExactlyInAnyOrder("서울", "부산");
+                .extracting(sk -> sk.getKeyword().getKeyText())
+                .containsExactlyInAnyOrder("서울", "부산");
 
         assertThat(site2Keywords).hasSize(1)
-            .extracting(sk -> sk.getKeyword().getKeyText())
-            .containsExactly("대구");
+                .extracting(sk -> sk.getKeyword().getKeyText())
+                .containsExactly("대구");
     }
 }
