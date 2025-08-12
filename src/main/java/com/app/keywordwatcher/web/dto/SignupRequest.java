@@ -1,12 +1,8 @@
 package com.app.keywordwatcher.web.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class SignupRequest {
     private String userId;
     private String email;

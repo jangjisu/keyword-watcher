@@ -86,7 +86,7 @@
         <button type="button" class="btn" onclick="signup()">회원가입</button>
 
         <div class="text-center" style="margin-top: 15px;">
-            <a href="/login" class="link">이미 계정이 있으신가요? 로그인</a>
+            <a href="/public/login" class="link">이미 계정이 있으신가요? 로그인</a>
         </div>
     </div>
 
@@ -115,7 +115,7 @@
                 confirmPassword: confirmPassword
             };
 
-            fetch('/api/signup', {
+            fetch('/public/api/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -124,12 +124,12 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
+                if (data.code === 200) {
                     // 회원가입 성공 시 로그인 페이지로 리다이렉트
-                    window.location.href = '/login?signup=true';
+                    window.location.href = '/public/login?signup=true';
                 } else {
                     // 에러 메시지 표시
-                    showAlert(data.message, 'error');
+                    showAlert(data?.message || '회원가입에 실패했습니다.', 'error');
                 }
             })
             .catch(error => {
