@@ -1,7 +1,7 @@
 package com.app.keywordwatcher.domain.user;
 
 import com.app.keywordwatcher.domain.BaseEntity;
-import com.app.keywordwatcher.web.dto.SignupRequest;
+import com.app.keywordwatcher.web.controller.auth.request.SignupRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -2,8 +2,8 @@ package com.app.keywordwatcher.web.service;
 
 import com.app.keywordwatcher.domain.user.User;
 import com.app.keywordwatcher.domain.user.UserRepository;
-import com.app.keywordwatcher.web.dto.LoginRequest;
-import com.app.keywordwatcher.web.dto.SignupRequest;
+import com.app.keywordwatcher.web.controller.auth.request.LoginRequest;
+import com.app.keywordwatcher.web.controller.auth.request.SignupRequest;
 import com.app.keywordwatcher.web.exception.LoginException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +49,7 @@ public class AuthService {
     public void login(LoginRequest request, HttpServletRequest httpRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                    new UsernamePasswordAuthenticationToken(request.getUserId(), request.getPassword())
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -57,7 +57,7 @@ public class AuthService {
             HttpSession session = httpRequest.getSession(true);
             session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
         } catch (RuntimeException e) {
-            log.error("Authentication failed for user: {}", request.getUsername());
+            log.error("Authentication failed for user: {}", request.getUserId());
             throw new LoginException("로그인에 실패했습니다.");
         }
 
