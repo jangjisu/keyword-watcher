@@ -5,7 +5,9 @@ import com.app.keywordwatcher.domain.user.UserRepository;
 import com.app.keywordwatcher.web.dto.LoginRequest;
 import com.app.keywordwatcher.web.dto.SignupRequest;
 import com.app.keywordwatcher.web.exception.LoginException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,18 +57,23 @@ public class AuthService {
             HttpSession session = httpRequest.getSession(true);
             session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
         } catch (RuntimeException e) {
-            log.error(e.getMessage());
+            log.error("Authentication failed for user: {}", request.getUsername());
             throw new LoginException("로그인에 실패했습니다.");
         }
 
     }
 
-    public void logout(HttpServletRequest request) {
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
 
         SecurityContextHolder.clearContext();
+
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 }
