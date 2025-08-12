@@ -51,7 +51,7 @@
             <h1>Keyword Watcher</h1>
             <div>
                 <span id="userInfo" class="user-info" style="display: none;">
-                    안녕하세요, <span id="username"></span>님!
+                    안녕하세요, <span id="userId"></span>님!
                 </span>
                 <button type="button" class="logout-btn" onclick="logout()" style="display: none; margin-left: 10px;" id="logoutBtn">로그아웃</button>
             </div>
@@ -83,7 +83,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 200 && data.data) {
-                        document.getElementById('username').textContent = data.data.username;
+                        document.getElementById('userId').textContent = data.data.userId;
                         document.getElementById('userInfo').style.display = 'inline';
                         document.getElementById('logoutBtn').style.display = 'inline';
                     }
