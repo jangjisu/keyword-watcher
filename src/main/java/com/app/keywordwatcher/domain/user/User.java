@@ -1,6 +1,10 @@
 package com.app.keywordwatcher.domain.user;
 
 import com.app.keywordwatcher.domain.BaseEntity;
+import com.app.keywordwatcher.domain.keyword.Keyword;
+import com.app.keywordwatcher.domain.site.Site;
+import com.app.keywordwatcher.domain.userkeyword.UserKeyword;
+import com.app.keywordwatcher.domain.usersite.UserSite;
 import com.app.keywordwatcher.web.controller.auth.request.SignupRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,9 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -38,6 +40,42 @@ public class User extends BaseEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserSite> userSites = new ArrayList<>();
+
+    public void addUserSite(Site site) {
+        boolean isExist = this.userSites.stream()
+                .anyMatch(userSite -> userSite.getSite().equals(site));
+
+        if (!isExist) {
+            UserSite userSite = UserSite.create(this, site);
+            this.userSites.add(userSite);
+        }
+    }
+
+    public void removeUserSite(Site site) {
+        this.userSites.removeIf(userSite ->
+                userSite.getSite().equals(site));
+    }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserKeyword> userKeywords = new ArrayList<>();
+
+    public void addUserKeyword(Keyword keyword) {
+        boolean isExist = this.userKeywords.stream()
+                .anyMatch(userKeyword -> userKeyword.getKeyword().equals(keyword));
+
+        if (!isExist) {
+            UserKeyword userKeyword = UserKeyword.create(this, keyword);
+            this.userKeywords.add(userKeyword);
+        }
+    }
+
+    public void removeUserKeyword(Keyword keyword) {
+        this.userKeywords.removeIf(userKeyword ->
+                userKeyword.getKeyword().equals(keyword));
+    }
 
     public static User create(String userId, String email, String password, PasswordEncoder passwordEncoder) {
         User user = new User();
