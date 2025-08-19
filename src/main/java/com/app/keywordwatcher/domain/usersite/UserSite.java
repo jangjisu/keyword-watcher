@@ -1,8 +1,8 @@
-package com.app.keywordwatcher.domain.sitekeyword;
+package com.app.keywordwatcher.domain.usersite;
 
 import com.app.keywordwatcher.domain.BaseEntity;
-import com.app.keywordwatcher.domain.keyword.Keyword;
 import com.app.keywordwatcher.domain.site.Site;
+import com.app.keywordwatcher.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,23 +11,24 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class SiteKeyword extends BaseEntity {
+public class UserSite extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Site site;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Keyword keyword;
+    private Site site;
 
-    public SiteKeyword(Site site, Keyword keyword) {
+    protected UserSite(User user, Site site) {
+        this.user = user;
         this.site = site;
-        this.keyword = keyword;
     }
 
-    public static SiteKeyword create(Site site, Keyword keyword) {
-        return new SiteKeyword(site, keyword);
+    public static UserSite create(User user, Site site) {
+        return new UserSite(user, site);
     }
 }
