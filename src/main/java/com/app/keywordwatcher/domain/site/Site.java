@@ -1,15 +1,13 @@
 package com.app.keywordwatcher.domain.site;
 
 import com.app.keywordwatcher.domain.BaseEntity;
-import com.app.keywordwatcher.domain.keyword.Keyword;
-import com.app.keywordwatcher.domain.sitekeyword.SiteKeyword;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,9 +23,6 @@ public class Site extends BaseEntity {
 
     private int createAtPosition;
 
-    @OneToMany(mappedBy = "site", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SiteKeyword> siteKeywords = new ArrayList<>();
-
     private Site(String url, int titlePosition, int createAtPosition) {
         this.url = url;
         this.titlePosition = titlePosition;
@@ -36,24 +31,5 @@ public class Site extends BaseEntity {
 
     public static Site create(String url, int titlePosition, int createAtPosition) {
         return new Site(url, titlePosition, createAtPosition);
-    }
-
-    public void addSiteKeyword(Keyword keyword) {
-        SiteKeyword siteKeyword = SiteKeyword.create(this, keyword);
-        this.siteKeywords.add(siteKeyword);
-    }
-
-    public void removeSiteKeyword(Keyword keyword) {
-        this.siteKeywords.removeIf(siteKeyword ->
-                siteKeyword.getKeyword().equals(keyword));
-    }
-
-    public void replaceSiteKeywords(List<Keyword> newKeywords) {
-        this.siteKeywords.clear();
-
-        newKeywords.forEach(keyword -> {
-            SiteKeyword siteKeyword = SiteKeyword.create(this, keyword);
-            this.siteKeywords.add(siteKeyword);
-        });
     }
 }
