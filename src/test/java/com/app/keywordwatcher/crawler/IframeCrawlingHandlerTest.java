@@ -1,18 +1,12 @@
 package com.app.keywordwatcher.crawler;
 
-import com.app.keywordwatcher.domain.keyword.Keyword;
 import com.app.keywordwatcher.domain.post.Post;
 import com.app.keywordwatcher.domain.site.Site;
-import com.app.keywordwatcher.domain.sitekeyword.SiteKeyword;
 import com.app.keywordwatcher.exception.CrawlingParseException;
 import com.app.keywordwatcher.util.CrawlingUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -55,10 +49,6 @@ class IframeCrawlingHandlerTest {
 
         String url = "https://www.gangnam.go.kr/contents/employment/1/view.do?mid=ID05_0418";
         siteInfo = Site.create(url, 2, 4);
-
-        Keyword keyword = Keyword.create("공고");
-        SiteKeyword siteKeyword = SiteKeyword.create(siteInfo, keyword);
-        siteInfo.getSiteKeywords().add(siteKeyword);
     }
 
     @BeforeEach
@@ -99,26 +89,6 @@ class IframeCrawlingHandlerTest {
 
         // when
         List<Post> result = handler.handle(doc, siteInfo, noMatchDate);
-
-        // then
-        assertThat(result).isEmpty();
-    }
-
-    @DisplayName("키워드가 포함된 게시글이 없을 때 빈 목록을 반환한다")
-    @Test
-    void no_matching_keyword() {
-        // given
-        crawlingUtilMock.when(() -> CrawlingUtil.fetchDocument(anyString())).thenReturn(iframeDoc);
-
-        Site siteWithDifferentKeyword = Site.create("test-url", 1, 3);
-        Keyword keyword = Keyword.create("존재하지않는키워드");
-        SiteKeyword siteKeyword = SiteKeyword.create(siteWithDifferentKeyword, keyword);
-        siteWithDifferentKeyword.getSiteKeywords().add(siteKeyword);
-
-        IframeCrawlingHandler handler = new IframeCrawlingHandler(null);
-
-        // when
-        List<Post> result = handler.handle(doc, siteWithDifferentKeyword, testDate);
 
         // then
         assertThat(result).isEmpty();

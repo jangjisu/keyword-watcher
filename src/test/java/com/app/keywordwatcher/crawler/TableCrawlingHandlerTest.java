@@ -1,9 +1,7 @@
 package com.app.keywordwatcher.crawler;
 
-import com.app.keywordwatcher.domain.keyword.Keyword;
 import com.app.keywordwatcher.domain.post.Post;
 import com.app.keywordwatcher.domain.site.Site;
-import com.app.keywordwatcher.domain.sitekeyword.SiteKeyword;
 import com.app.keywordwatcher.exception.CrawlingParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -39,10 +37,6 @@ class TableCrawlingHandlerTest {
 
         String url = "https://culture.seoul.go.kr/culture/bbs/B0000002/list.do?menuNo=200052";
         siteInfo = Site.create(url, 1, 3);
-
-        Keyword keyword = Keyword.create("모집");
-        SiteKeyword siteKeyword = SiteKeyword.create(siteInfo, keyword);
-        siteInfo.getSiteKeywords().add(siteKeyword);
     }
 
     @DisplayName("키워드가 포함된 게시글이 있을 때 정상적으로 Post 목록을 반환한다")
@@ -70,24 +64,6 @@ class TableCrawlingHandlerTest {
 
         // when
         List<Post> result = handler.handle(doc, siteInfo, noMatchDate);
-
-        // then
-        assertThat(result).isEmpty();
-    }
-
-    @DisplayName("키워드가 포함된 게시글이 없을 때 빈 목록을 반환한다")
-    @Test
-    void no_matching_keyword() {
-        // given
-        Site siteWithDifferentKeyword = Site.create("test-url", 1, 3);
-        Keyword keyword = Keyword.create("존재하지않는키워드");
-        SiteKeyword siteKeyword = SiteKeyword.create(siteWithDifferentKeyword, keyword);
-        siteWithDifferentKeyword.getSiteKeywords().add(siteKeyword);
-
-        TableCrawlingHandler handler = new TableCrawlingHandler(null);
-
-        // when
-        List<Post> result = handler.handle(doc, siteWithDifferentKeyword, testDate);
 
         // then
         assertThat(result).isEmpty();

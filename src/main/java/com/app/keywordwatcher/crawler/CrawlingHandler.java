@@ -1,9 +1,7 @@
 package com.app.keywordwatcher.crawler;
 
-import com.app.keywordwatcher.domain.keyword.Keyword;
 import com.app.keywordwatcher.domain.post.Post;
 import com.app.keywordwatcher.domain.site.Site;
-import com.app.keywordwatcher.domain.sitekeyword.SiteKeyword;
 import com.app.keywordwatcher.exception.CrawlingParseException;
 import com.app.keywordwatcher.util.CrawlingUtil;
 import com.app.keywordwatcher.util.DateUtil;
@@ -40,19 +38,10 @@ public abstract class CrawlingHandler {
             return nextHandler.handle(doc, siteInfo, date);
         }
 
-        List<Post> datePosts = rows.stream()
+        return rows.stream()
                 .map(el -> mapToPostIfMatchDate(el, siteInfo, date))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .toList();
-
-        List<String> keyTexts = siteInfo.getSiteKeywords().stream()
-                .map(SiteKeyword::getKeyword)
-                .map(Keyword::getKeyText)
-                .toList();
-
-        return datePosts.stream()
-                .filter(post -> keyTexts.stream().anyMatch(post.getTitle()::contains))
                 .toList();
     }
 
