@@ -6,9 +6,7 @@ import com.app.keywordwatcher.domain.user.User;
 import com.app.keywordwatcher.domain.user.UserRepository;
 import com.app.keywordwatcher.web.controller.keyword.request.KeywordRequest;
 import com.app.keywordwatcher.web.service.ServiceTestSupport;
-import com.app.keywordwatcher.web.service.keyword.KeywordService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,12 +26,6 @@ class UserKeywordServiceTest extends ServiceTestSupport {
     private UserKeywordService userKeywordService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private KeywordService keywordService;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -42,8 +34,8 @@ class UserKeywordServiceTest extends ServiceTestSupport {
     @Autowired
     private UserRepository userRepository;
 
-    @PersistenceContext  // 또는 @Autowired
-    private EntityManager em;
+    @Autowired
+    private EntityManager entityManager;
 
 
     @BeforeEach
@@ -60,12 +52,12 @@ class UserKeywordServiceTest extends ServiceTestSupport {
         Keyword keyword1 = Keyword.create("부산");
         keywordRepository.save(keyword1);
 
-        em.flush();
+        entityManager.flush();
 
         user.addUserKeyword(keyword);
         user.addUserKeyword(keyword1);
 
-        em.flush();
+        entityManager.flush();
     }
 
     @DisplayName("존재하는 유저의 키워드를 조회할 수 있다")
