@@ -3,7 +3,7 @@ package com.app.keywordwatcher.web.controller.auth;
 import com.app.keywordwatcher.web.controller.ApiResponse;
 import com.app.keywordwatcher.web.controller.auth.request.LoginRequest;
 import com.app.keywordwatcher.web.controller.auth.request.SignupRequest;
-import com.app.keywordwatcher.web.service.AuthService;
+import com.app.keywordwatcher.web.service.auth.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -14,25 +14,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RequestMapping("/public")
+@RequestMapping("/public/api")
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/api/login")
+    @PostMapping("/login")
     public ApiResponse<Boolean> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         authService.login(request, httpRequest);
         return ApiResponse.success(true);
     }
 
-    @PostMapping("/api/signup")
+    @PostMapping("/signup")
     public ApiResponse<Long> signup(@Valid @RequestBody SignupRequest request) {
         return ApiResponse.success(authService.signUp(request));
     }
 
-    @PostMapping("/api/logout")
+    @PostMapping("/logout")
     public ApiResponse<Boolean> logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
 
