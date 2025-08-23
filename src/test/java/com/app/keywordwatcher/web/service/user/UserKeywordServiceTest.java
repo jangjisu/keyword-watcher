@@ -93,12 +93,12 @@ class UserKeywordServiceTest extends ServiceTestSupport {
     @Test
     void add_exist_keyword() {
         // given
-        KeywordRequest newKeyword = KeywordRequest.builder()
+        KeywordRequest existKeyword = KeywordRequest.builder()
                 .keyText("서울")
                 .build();
 
         // when
-        userKeywordService.addKeyword("existUser2", newKeyword);
+        userKeywordService.addKeyword("existUser2", existKeyword);
 
         // then
         List<Keyword> keywords = keywordRepository.findAll();
@@ -137,5 +137,39 @@ class UserKeywordServiceTest extends ServiceTestSupport {
         assertThat(user.get().getUserKeywords()).hasSize(3)
                 .extracting(it -> it.getKeyword().getKeyText())
                 .containsExactlyInAnyOrder("서울", "부산", "강원");
+    }
+
+    @DisplayName("유저에 등록된 키워드를 삭제할 수 있다.")
+    @Test
+    void delete_exist_keyword() {
+        // given
+        KeywordRequest existKeyword = KeywordRequest.builder()
+                .keyText("서울")
+                .build();
+
+        // when
+        userKeywordService.removeKeyword("existUser", existKeyword);
+
+        // then
+        Optional<User> user = userRepository.findByUserId("existUser");
+        assertThat(user).isPresent();
+
+        assertThat(user.get().getUserKeywords()).hasSize(1)
+                .extracting(it -> it.getKeyword().getKeyText())
+                .containsExactlyInAnyOrder("부산");
+    }
+
+    @DisplayName("등록되지 않은 키워드를 삭제 요청할 경우 에러가 발생한다.")
+    @Test
+    void delete_non_exist_keyword() {
+        // given
+        KeywordRequest nonExistKeyword = KeywordRequest.builder()
+                .keyText("주차")
+                .build();
+
+        // when // then
+        assertThatThrownBy(() -> userKeywordService.removeKeyword("existUser", nonExistKeyword))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("키워드를 찾을 수 없습니다.");
     }
 }
