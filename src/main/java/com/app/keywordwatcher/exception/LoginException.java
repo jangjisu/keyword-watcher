@@ -1,4 +1,4 @@
-package com.app.keywordwatcher.web.exception;
+package com.app.keywordwatcher.exception;
 
 public class LoginException extends RuntimeException {
     public LoginException(String message) {
