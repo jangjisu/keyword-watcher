@@ -2,7 +2,7 @@ package com.app.keywordwatcher.web.controller;
 
 import com.app.keywordwatcher.web.controller.auth.AuthController;
 import com.app.keywordwatcher.web.controller.user.UserController;
-import com.app.keywordwatcher.web.service.AuthService;
+import com.app.keywordwatcher.web.service.auth.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

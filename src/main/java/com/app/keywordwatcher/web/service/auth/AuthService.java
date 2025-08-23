@@ -1,4 +1,4 @@
-package com.app.keywordwatcher.web.service;
+package com.app.keywordwatcher.web.service.auth;
 
 import com.app.keywordwatcher.domain.user.User;
 import com.app.keywordwatcher.domain.user.UserRepository;
