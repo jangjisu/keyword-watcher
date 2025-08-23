@@ -5,7 +5,6 @@ import com.app.keywordwatcher.domain.user.UserRepository;
 import com.app.keywordwatcher.web.controller.auth.request.LoginRequest;
 import com.app.keywordwatcher.web.controller.auth.request.SignupRequest;
 import com.app.keywordwatcher.web.exception.LoginException;
-import com.app.keywordwatcher.web.service.AuthService;
 import com.app.keywordwatcher.web.service.ServiceTestSupport;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
