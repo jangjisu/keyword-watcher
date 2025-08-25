@@ -1,4 +1,4 @@
-package com.app.keywordwatcher.web.controller.keyword.request;
+package com.app.keywordwatcher.web.controller.user.keyword.request;
 
 import com.app.keywordwatcher.domain.keyword.Keyword;
 import jakarta.validation.constraints.NotEmpty;

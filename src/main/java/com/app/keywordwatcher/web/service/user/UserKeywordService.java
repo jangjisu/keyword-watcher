@@ -3,7 +3,7 @@ package com.app.keywordwatcher.web.service.user;
 import com.app.keywordwatcher.domain.keyword.Keyword;
 import com.app.keywordwatcher.domain.user.User;
 import com.app.keywordwatcher.domain.userkeyword.UserKeyword;
-import com.app.keywordwatcher.web.controller.keyword.request.KeywordRequest;
+import com.app.keywordwatcher.web.controller.user.keyword.request.KeywordRequest;
 import com.app.keywordwatcher.web.service.keyword.KeywordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,18 +31,20 @@ public class UserKeywordService {
      * 사용자에게 키워드 추가
      */
     @Transactional
-    public void addKeyword(String userId, KeywordRequest keywordRequest) {
+    public Long addKeyword(String userId, KeywordRequest keywordRequest) {
         Keyword keyword = keywordService.createIfNonExistKeyword(keywordRequest);
         getUser(userId).addUserKeyword(keyword);
+        return keyword.getId();
     }
 
     /**
      * keyText로 사용자에게서 키워드 제거
      */
     @Transactional
-    public void removeKeyword(String userId, KeywordRequest keywordRequest) {
+    public Long removeKeyword(String userId, KeywordRequest keywordRequest) {
         Keyword keyword = keywordService.getKeyword(keywordRequest);
         getUser(userId).removeUserKeyword(keyword);
+        return keyword.getId();
     }
 
 
