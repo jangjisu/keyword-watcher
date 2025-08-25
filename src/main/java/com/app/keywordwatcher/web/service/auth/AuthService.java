@@ -1,10 +1,9 @@
 package com.app.keywordwatcher.web.service.auth;
 
-import com.app.keywordwatcher.domain.user.User;
-import com.app.keywordwatcher.domain.user.UserRepository;
+import com.app.keywordwatcher.exception.LoginException;
 import com.app.keywordwatcher.web.controller.auth.request.LoginRequest;
 import com.app.keywordwatcher.web.controller.auth.request.SignupRequest;
-import com.app.keywordwatcher.web.exception.LoginException;
+import com.app.keywordwatcher.web.service.user.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,16 +14,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
-    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     public Long signUp(SignupRequest request) {
         if (request.getPassword() == null) {
@@ -35,15 +32,7 @@ public class AuthService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        if (userRepository.existsByUserId(request.getUserId())) {
-            throw new IllegalArgumentException("이미 사용 중인 ID입니다.");
-        }
-
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
-        }
-
-        return userRepository.save(User.create(request, passwordEncoder)).getId();
+        return userService.save(request).getId();
     }
 
     public void login(LoginRequest request, HttpServletRequest httpRequest) {

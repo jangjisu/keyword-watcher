@@ -4,8 +4,9 @@ import com.app.keywordwatcher.domain.user.User;
 import com.app.keywordwatcher.domain.user.UserRepository;
 import com.app.keywordwatcher.web.controller.auth.request.LoginRequest;
 import com.app.keywordwatcher.web.controller.auth.request.SignupRequest;
-import com.app.keywordwatcher.web.exception.LoginException;
+import com.app.keywordwatcher.exception.LoginException;
 import com.app.keywordwatcher.web.service.ServiceTestSupport;
+import com.app.keywordwatcher.web.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -38,6 +39,9 @@ class AuthServiceTest extends ServiceTestSupport {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UserService userService;
+
     private AuthService authService;
 
     @Mock
@@ -55,7 +59,7 @@ class AuthServiceTest extends ServiceTestSupport {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        authService = new AuthService(userRepository, authenticationManager, passwordEncoder);
+        authService = new AuthService(authenticationManager, userService);
 
         User user = User.create("existUser", "exist@example.com", "password123", passwordEncoder);
         userRepository.save(user);
