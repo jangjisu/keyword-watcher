@@ -4,78 +4,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keyword Watcher</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
+        .main-content {
+            min-height: calc(100vh - 200px);
         }
-        .header {
+        .keyword-item {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
         }
-        .user-info {
-            font-size: 14px;
-            color: #666;
+        .keyword-text {
+            font-weight: 500;
         }
-        .logout-btn {
-            padding: 5px 10px;
-            background-color: #dc3545;
-            color: white;
+        .btn-delete {
+            background: none;
             border: none;
-            border-radius: 4px;
-            text-decoration: none;
+            color: #dc3545;
+            font-size: 1.2em;
             cursor: pointer;
         }
-        .logout-btn:hover {
-            background-color: #c82333;
+        .btn-delete:hover {
+            color: #b02a37;
         }
-        .welcome {
-            text-align: center;
-            margin: 50px 0;
-        }
-        .content {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
+        .section-title {
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Keyword Watcher</h1>
-            <div>
-                <span id="userInfo" class="user-info" style="display: none;">
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-search me-2"></i>Keyword Watcher
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span id="userInfo" class="navbar-text me-3" style="display: none;">
                     안녕하세요, <span id="userId"></span>님!
                 </span>
-                <button type="button" class="logout-btn" onclick="logout()" style="display: none; margin-left: 10px;" id="logoutBtn">로그아웃</button>
+                <button type="button" class="btn btn-outline-light btn-sm" onclick="logout()" style="display: none;" id="logoutBtn">
+                    <i class="bi bi-box-arrow-right me-1"></i>로그아웃
+                </button>
             </div>
         </div>
+    </nav>
 
-        <div class="welcome">
-            <h2>키워드 모니터링 시스템에 오신 것을 환영합니다!</h2>
-            <p>이곳에서 웹사이트의 키워드를 추적하고 모니터링할 수 있습니다.</p>
-        </div>
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row main-content">
+            <!-- 왼쪽: 키워드 관리 섹션 -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="section-title mb-0">
+                            <i class="bi bi-tags me-2"></i>키워드 관리
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- 키워드 추가 버튼 -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addKeywordModal">
+                                <i class="bi bi-plus-circle me-1"></i>키워드 추가
+                            </button>
+                        </div>
 
-        <div class="content">
-            <h3>주요 기능</h3>
-            <ul>
-                <li>웹사이트 키워드 모니터링</li>
-                <li>실시간 알림</li>
-                <li>키워드 추적 히스토리</li>
-                <li>사용자별 대시보드</li>
-            </ul>
+                        <!-- 키워드 목록 -->
+                        <div id="keywordList">
+                            <!-- 키워드 목록이 동적으로 로드됩니다 -->
+                            <div class="text-center text-muted">
+                                <i class="bi bi-info-circle me-1"></i>등록된 키워드가 없습니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 오른쪽: 사이트 관리 섹션 -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="section-title mb-0">
+                            <i class="bi bi-globe me-2"></i>사이트 관리
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- 사이트 추가 버튼 -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSiteModal">
+                                <i class="bi bi-plus-circle me-1"></i>사이트 추가
+                            </button>
+                        </div>
+
+                        <!-- 사이트 목록 -->
+                        <div id="siteList">
+                            <!-- 사이트 목록이 동적으로 로드됩니다 -->
+                            <div class="text-center text-muted">
+                                <i class="bi bi-info-circle me-1"></i>등록된 사이트가 없습니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- 키워드 추가 모달 -->
+    <div class="modal fade" id="addKeywordModal" tabindex="-1" aria-labelledby="addKeywordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addKeywordModalLabel">
+                        <i class="bi bi-plus-circle me-2"></i>새 키워드 추가
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addKeywordForm">
+                        <div class="mb-3">
+                            <label for="keywordInput" class="form-label">키워드</label>
+                            <input type="text" class="form-control" id="keywordInput" placeholder="추가할 키워드를 입력하세요" required>
+                            <div class="form-text text-muted">
+                                <i class="bi bi-info-circle me-1"></i>키워드는 자동으로 소문자로 변환되어 저장됩니다.
+                            </div>
+                            <div class="invalid-feedback">
+                                키워드를 입력해주세요.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>취소
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addKeyword()">
+                        <i class="bi bi-check-circle me-1"></i>추가
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 사이트 추가 모달 (수정된 부분) -->
+    <div class="modal fade" id="addSiteModal" tabindex="-1" aria-labelledby="addSiteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSiteModalLabel">
+                        <i class="bi bi-plus-circle me-2"></i>새 사이트 추가
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addSiteForm">
+                        <div class="mb-3">
+                            <label for="siteUrlInput" class="form-label">사이트 URL</label>
+                            <input type="url" class="form-control" id="siteUrlInput" placeholder="추가할 사이트의 URL을 입력하세요" required>
+                            <div class="invalid-feedback">
+                                사이트 URL을 입력해주세요.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>취소
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="addSite()">
+                        <i class="bi bi-check-circle me-1"></i>추가
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         window.onload = function() {
             loadUserInfo();
+            loadKeywords();
+            loadSites();
         };
 
         function loadUserInfo() {
@@ -91,6 +211,216 @@
                 .catch(error => {
                     console.error('Error loading user info:', error);
                 });
+        }
+
+        function loadKeywords() {
+            fetch('/api/user/keyword')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        displayKeywords(data.data);
+                    } else {
+                        displayEmptyKeywords();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading keywords:', error);
+                    displayEmptyKeywords();
+                });
+        }
+
+        function loadSites() {
+            fetch('/api/user/site')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data) {
+                        displaySites(data.data);
+                    } else {
+                        displayEmptySites();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading sites:', error);
+                    displayEmptySites();
+                });
+        }
+
+        function displayKeywords(keywords) {
+            const keywordList = document.getElementById('keywordList');
+            if (keywords.length === 0) {
+                displayEmptyKeywords();
+                return;
+            }
+
+            keywordList.innerHTML = keywords.map(keyword => `
+                <div class="keyword-item">
+                    <span class="keyword-text">${keyword.keyText}</span>
+                    <button class="btn-delete" onclick="deleteKeyword('${keyword.keyText}')">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function displayEmptyKeywords() {
+            const keywordList = document.getElementById('keywordList');
+            keywordList.innerHTML = `
+                <div class="text-center text-muted">
+                    <i class="bi bi-info-circle me-1"></i>등록된 키워드가 없습니다.
+                </div>
+            `;
+        }
+
+        function displaySites(sites) {
+            const siteList = document.getElementById('siteList');
+            if (sites.length === 0) {
+                displayEmptySites();
+                return;
+            }
+
+            siteList.innerHTML = sites.map(site => `
+                <div class="keyword-item">
+                    <span class="keyword-text">${site.url}</span>
+                    <button class="btn-delete" onclick="deleteSite('${site.url}')">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function displayEmptySites() {
+            const siteList = document.getElementById('siteList');
+            siteList.innerHTML = `
+                <div class="text-center text-muted">
+                    <i class="bi bi-info-circle me-1"></i>등록된 사이트가 없습니다.
+                </div>
+            `;
+        }
+
+        function addKeyword() {
+            const keywordInput = document.getElementById('keywordInput');
+            const keyword = keywordInput.value.trim();
+
+            if (!keyword) {
+                keywordInput.classList.add('is-invalid');
+                return;
+            }
+
+            keywordInput.classList.remove('is-invalid');
+
+            fetch('/api/user/keyword/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ keyText: keyword })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    // 모달 닫기 및 입력 필드 초기화
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addKeywordModal'));
+                    modal.hide();
+                    keywordInput.value = '';
+
+                    // 키워드 목록 새로고침
+                    loadKeywords();
+                } else {
+                    alert('키워드 추가 실패: ' + (data.message || '알 수 없는 오류'));
+                }
+            })
+            .catch(error => {
+                console.error('Error adding keyword:', error);
+                alert('키워드 추가 중 오류가 발생했습니다.');
+            });
+        }
+
+        function addSite() {
+            const siteUrlInput = document.getElementById('siteUrlInput');
+            const siteUrl = siteUrlInput.value.trim();
+
+            if (!siteUrl) {
+                siteUrlInput.classList.add('is-invalid');
+                return;
+            }
+
+            siteUrlInput.classList.remove('is-invalid');
+
+            fetch('/api/user/site/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url: siteUrl })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    // 모달 닫기 및 입력 필드 초기화
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addSiteModal'));
+                    modal.hide();
+                    siteUrlInput.value = '';
+
+                    // 사이트 목록 새로고침
+                    loadSites();
+                } else {
+                    alert('사이트 추가 실패: ' + (data.message || '알 수 없는 오류'));
+                }
+            })
+            .catch(error => {
+                console.error('Error adding site:', error);
+                alert('사이트 추가 중 오류가 발생했습니다.');
+            });
+        }
+
+        function deleteKeyword(keywordText) {
+            if (confirm('정말로 이 키워드를 삭제하시겠습니까?')) {
+                fetch('/api/user/keyword/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ keyText: keywordText })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        // 키워드 목록 새로고침
+                        loadKeywords();
+                    } else {
+                        alert('키워드 삭제 실패: ' + (data.message || '알 수 없는 오류'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting keyword:', error);
+                    alert('키워드 삭제 중 오류가 발생했습니다.');
+                });
+            }
+        }
+
+        function deleteSite(siteUrl) {
+            if (confirm('정말로 이 사이트를 삭제하시겠습니까?')) {
+                fetch('/api/user/site/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: siteUrl })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        // 사이트 목록 새로고침
+                        loadSites();
+                    } else {
+                        alert('사이트 삭제 실패: ' + (data.message || '알 수 없는 오류'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting site:', error);
+                    alert('사이트 삭제 중 오류가 발생했습니다.');
+                });
+            }
         }
 
         function logout() {
