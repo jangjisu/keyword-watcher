@@ -1,6 +1,7 @@
 package com.app.keywordwatcher.web.controller.user;
 
 import com.app.keywordwatcher.web.controller.ControllerTestSupport;
+import com.zaxxer.hikari.util.Credentials;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -13,12 +14,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class UserControllerTest extends ControllerTestSupport {
+    private final Credentials testCredential = Credentials.of("tester", "password123");
 
     @DisplayName("인증된 사용자의 정보를 조회할 수 있다")
     @Test
     void getUserInfo() throws Exception {
         // given
-        Authentication authentication = new TestingAuthenticationToken("testuser@example.com", null);
+        Authentication authentication = new TestingAuthenticationToken("testuser@example.com", testCredential);
 
         // when & then
         MockHttpServletRequestBuilder requestBuilder = get("/api/user/")

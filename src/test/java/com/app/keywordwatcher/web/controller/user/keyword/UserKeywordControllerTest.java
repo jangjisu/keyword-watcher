@@ -2,6 +2,7 @@ package com.app.keywordwatcher.web.controller.user.keyword;
 
 import com.app.keywordwatcher.web.controller.ControllerTestSupport;
 import com.app.keywordwatcher.web.controller.user.keyword.request.KeywordRequest;
+import com.zaxxer.hikari.util.Credentials;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -17,6 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class UserKeywordControllerTest extends ControllerTestSupport {
+    private final Credentials testCredential = Credentials.of("tester", "password123");
+
     @DisplayName("올바른 키워드 등록 요청 시 성공 응답을 반환한다")
     @Test
     void keyword_add_success() throws Exception {
@@ -25,7 +28,7 @@ class UserKeywordControllerTest extends ControllerTestSupport {
                 .keyText("testKeyword")
                 .build();
 
-        Authentication authentication = new TestingAuthenticationToken("test@example.com", null);
+        Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
         given(userKeywordService.addKeyword(anyString(), any(KeywordRequest.class)))
                 .willReturn(1L);
 
@@ -47,7 +50,7 @@ class UserKeywordControllerTest extends ControllerTestSupport {
     @Test
     void keyword_add_failure_empty_keyword() throws Exception {
         // given
-        Authentication authentication = new TestingAuthenticationToken("test@example.com", null);
+        Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
         KeywordRequest request = KeywordRequest.builder()
                 .build();
 
@@ -68,7 +71,7 @@ class UserKeywordControllerTest extends ControllerTestSupport {
     @Test
     void keyword_delete_success() throws Exception {
         // given
-        Authentication authentication = new TestingAuthenticationToken("test@example.com", null);
+        Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
         KeywordRequest request = KeywordRequest.builder()
                 .keyText("testKeyword")
                 .build();
@@ -94,7 +97,7 @@ class UserKeywordControllerTest extends ControllerTestSupport {
     @Test
     void keyword_delete_failure_empty_keyword() throws Exception {
         // given
-        Authentication authentication = new TestingAuthenticationToken("test@example.com", null);
+        Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
 
         KeywordRequest request = KeywordRequest.builder()
                 .build();
