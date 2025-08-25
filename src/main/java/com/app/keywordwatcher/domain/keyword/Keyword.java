@@ -1,6 +1,7 @@
 package com.app.keywordwatcher.domain.keyword;
 
 import com.app.keywordwatcher.domain.BaseEntity;
+import com.app.keywordwatcher.web.service.user.response.KeywordResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -24,5 +25,11 @@ public class Keyword extends BaseEntity {
 
     public static Keyword create(String keyText) {
         return new Keyword(keyText);
+    }
+
+    public KeywordResponse toResponse() {
+        return KeywordResponse.builder()
+                .keyText(this.keyText)
+                .build();
     }
 }
