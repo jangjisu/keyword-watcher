@@ -15,6 +15,11 @@ public class KeywordRequest {
         this.keyText = keyText;
     }
 
+    public String normalizeKeyText() {
+        this.keyText = this.keyText.trim().toLowerCase();
+        return this.keyText;
+    }
+
     public Keyword toKeyword() {
         return Keyword.create(keyText);
     }
