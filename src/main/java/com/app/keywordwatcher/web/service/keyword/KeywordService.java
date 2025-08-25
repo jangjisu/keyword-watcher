@@ -2,7 +2,7 @@ package com.app.keywordwatcher.web.service.keyword;
 
 import com.app.keywordwatcher.domain.keyword.Keyword;
 import com.app.keywordwatcher.domain.keyword.KeywordRepository;
-import com.app.keywordwatcher.web.controller.keyword.request.KeywordRequest;
+import com.app.keywordwatcher.web.controller.user.keyword.request.KeywordRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
