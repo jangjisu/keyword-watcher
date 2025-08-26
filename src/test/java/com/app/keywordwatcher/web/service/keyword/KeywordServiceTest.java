@@ -25,11 +25,7 @@ class KeywordServiceTest extends ServiceTestSupport {
 
     @BeforeEach
     void setUp() {
-        KeywordRequest keywordRequest = KeywordRequest.builder()
-                .keyText("test")
-                .build();
-
-        keywordRepository.save(keywordRequest.toKeyword());
+        keywordRepository.save(Keyword.create("test"));
     }
 
     @DisplayName("존재하는 키워드를 조회한다")

@@ -5,6 +5,7 @@ import com.app.keywordwatcher.domain.user.User;
 import com.app.keywordwatcher.domain.userkeyword.UserKeyword;
 import com.app.keywordwatcher.web.controller.user.keyword.request.KeywordRequest;
 import com.app.keywordwatcher.web.service.keyword.KeywordService;
+import com.app.keywordwatcher.web.service.user.response.KeywordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +22,10 @@ public class UserKeywordService {
     /**
      * 사용자의 키워드 목록 조회
      */
-    public List<Keyword> getUserKeywords(String userId) {
+    public List<KeywordResponse> getUserKeywords(String userId) {
         return getUser(userId).getUserKeywords().stream()
                 .map(UserKeyword::getKeyword)
+                .map(Keyword::toResponse)
                 .toList();
     }
 

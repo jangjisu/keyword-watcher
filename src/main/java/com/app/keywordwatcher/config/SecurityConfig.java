@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .userDetailsService(userDetailsService)
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**", "/public/**")
+                        .ignoringRequestMatchers("/h2-console/**", "/public/**", "/api/**")
                 )
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)

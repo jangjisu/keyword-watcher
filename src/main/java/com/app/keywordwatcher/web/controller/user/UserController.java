@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
-    @GetMapping("/")
+    @GetMapping
     public ApiResponse<UserResponse> getUserInfo(Authentication authentication) {
         return ApiResponse.success(UserResponse.create(authentication.getName()));
     }
