@@ -18,16 +18,20 @@ public class KeywordService {
      */
     @Transactional
     public Keyword createIfNonExistKeyword(KeywordRequest keywordRequest) {
-        String norm = keywordRequest.normalizeKeyText();
+        String normalizedKeyText = getNormalizeKeyText(keywordRequest);
 
-        return keywordRepo.findByKeyText(norm)
-                .orElseGet(() -> keywordRepo.save(keywordRequest.toKeyword()));
+        return keywordRepo.findByKeyText(normalizedKeyText)
+                .orElseGet(() -> keywordRepo.save(Keyword.create(normalizedKeyText)));
     }
 
     public Keyword getKeyword(KeywordRequest keywordRequest) {
-        String norm = keywordRequest.normalizeKeyText();
+        String normalizedKeyText = getNormalizeKeyText(keywordRequest);
 
-        return keywordRepo.findByKeyText(norm)
+        return keywordRepo.findByKeyText(normalizedKeyText)
                 .orElseThrow(() -> new IllegalArgumentException("키워드를 찾을 수 없습니다."));
+    }
+
+    private String getNormalizeKeyText(KeywordRequest keywordRequest) {
+        return keywordRequest.getKeyText().trim().toLowerCase();
     }
 }
