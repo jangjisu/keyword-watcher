@@ -23,7 +23,7 @@ class UserControllerTest extends ControllerTestSupport {
         Authentication authentication = new TestingAuthenticationToken("testuser@example.com", testCredential);
 
         // when & then
-        MockHttpServletRequestBuilder requestBuilder = get("/api/user/")
+        MockHttpServletRequestBuilder requestBuilder = get("/api/user")
                 .requestAttr("authentication", authentication)
                 .principal(authentication);
 
