@@ -1,6 +1,5 @@
 package com.app.keywordwatcher.web.controller.user.keyword.request;
 
-import com.app.keywordwatcher.domain.keyword.Keyword;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,14 +12,5 @@ public class KeywordRequest {
     @Builder
     public KeywordRequest(String keyText) {
         this.keyText = keyText;
-    }
-
-    public String normalizeKeyText() {
-        this.keyText = this.keyText.trim().toLowerCase();
-        return this.keyText;
-    }
-
-    public Keyword toKeyword() {
-        return Keyword.create(keyText);
     }
 }
