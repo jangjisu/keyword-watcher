@@ -3,8 +3,10 @@ package com.app.keywordwatcher.web.controller;
 import com.app.keywordwatcher.web.controller.auth.AuthController;
 import com.app.keywordwatcher.web.controller.user.UserController;
 import com.app.keywordwatcher.web.controller.user.keyword.UserKeywordController;
+import com.app.keywordwatcher.web.controller.user.site.UserSiteController;
 import com.app.keywordwatcher.web.service.auth.AuthService;
 import com.app.keywordwatcher.web.service.user.UserKeywordService;
+import com.app.keywordwatcher.web.service.user.UserSiteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import static org.mockito.Mockito.reset;
         AuthController.class,
         UserController.class,
         UserKeywordController.class,
+        UserSiteController.class,
 })
 @Import(ControllerTestSupport.Mocks.class)
 @AutoConfigureMockMvc(addFilters = false) // spring security 필터를 비활성화
@@ -38,6 +41,9 @@ public abstract class ControllerTestSupport {
     @Autowired
     protected UserKeywordService userKeywordService;
 
+    @Autowired
+    protected UserSiteService userSiteService;
+
     @TestConfiguration
     static class Mocks {
         @Bean
@@ -49,11 +55,15 @@ public abstract class ControllerTestSupport {
         UserKeywordService userKeywordService() {
             return mock(UserKeywordService.class);
         }
+
+        @Bean
+        UserSiteService userSiteService() {
+            return mock(UserSiteService.class);
+        }
     }
 
     @BeforeEach
     void resetMocks() {
-        reset(authService, userKeywordService);
+        reset(authService, userKeywordService, userSiteService);
     }
 }
-

@@ -6,6 +6,7 @@ import com.app.keywordwatcher.domain.user.User;
 import com.app.keywordwatcher.domain.user.UserRepository;
 import com.app.keywordwatcher.web.controller.user.keyword.request.KeywordRequest;
 import com.app.keywordwatcher.web.service.ServiceTestSupport;
+import com.app.keywordwatcher.web.service.user.response.KeywordResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +65,7 @@ class UserKeywordServiceTest extends ServiceTestSupport {
     @Test
     void get_user_keywords() {
         // given
-        List<Keyword> keywords = userKeywordService.getUserKeywords("existUser");
+        List<KeywordResponse> keywords = userKeywordService.getUserKeywords("existUser");
 
         // when // then
         assertThat(keywords).hasSize(2)
