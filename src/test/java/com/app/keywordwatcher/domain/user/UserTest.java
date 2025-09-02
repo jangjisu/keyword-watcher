@@ -17,7 +17,7 @@ class UserTest {
     void add_site_from_user() {
         // given
         User user = User.create("testuser", "test@example.com", "password123", passwordEncoder);
-        Site site = Site.create("https://example.com", 1, 2);
+        Site site = Site.create("https://example.com");
 
         //when
         user.addUserSite(site);
@@ -36,7 +36,7 @@ class UserTest {
     void add_duplicate_site() {
         // given
         User user = User.create("testuser", "test@example.com", "password123", passwordEncoder);
-        Site site = Site.create("https://example.com", 1, 2);
+        Site site = Site.create("https://example.com");
 
         //when
         user.addUserSite(site);
@@ -57,8 +57,8 @@ class UserTest {
     void remove_site_from_user() {
         // given
         User user = User.create("testuser", "test@example.com", "password123", passwordEncoder);
-        Site site = Site.create("https://example.com", 1, 2);
-        Site site2 = Site.create("https://exampletwo.com", 2, 4);
+        Site site = Site.create("https://example.com");
+        Site site2 = Site.create("https://exampletwo.com");
 
         user.addUserSite(site);
         user.addUserSite(site2);

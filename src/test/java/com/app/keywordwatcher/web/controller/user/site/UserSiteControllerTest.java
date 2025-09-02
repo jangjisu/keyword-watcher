@@ -26,8 +26,6 @@ class UserSiteControllerTest extends ControllerTestSupport {
         // given
         SiteRequest request = SiteRequest.builder()
                 .url("https://example.com")
-                .titleIndex(3)
-                .createAtIndex(4)
                 .build();
 
         Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
@@ -48,61 +46,12 @@ class UserSiteControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data").value(1L));
     }
 
-    @DisplayName("titleIndex가 빈 사이트 등록 요청 시 예외가 발생한다")
-    @Test
-    void site_add_failure_empty_titleIndex() throws Exception {
-        // given
-        Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
-        SiteRequest request = SiteRequest.builder()
-                .url("https://example.com")
-                .createAtIndex(4)
-                .build();
-
-        // when & then
-        mockMvc.perform(
-                        post("/api/user/site/add")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .principal(authentication)
-                )
-                .andDo(print())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value("제목 index는 필수입니다."));
-    }
-
-    @DisplayName("createdAtIndex가 빈 사이트 등록 요청 시 예외가 발생한다")
-    @Test
-    void site_add_failure_empty_createdAtIndex() throws Exception {
-        // given
-        Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
-        SiteRequest request = SiteRequest.builder()
-                .url("https://example.com")
-                .titleIndex(3)
-                .build();
-
-        // when & then
-        mockMvc.perform(
-                        post("/api/user/site/add")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .principal(authentication)
-                )
-                .andDo(print())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value("작성일 index는 필수입니다."));
-    }
-
     @DisplayName("url이 빈 사이트 등록 요청 시 예외가 발생한다")
     @Test
     void site_add_failure_empty_url() throws Exception {
         // given
         Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
-        SiteRequest request = SiteRequest.builder()
-                .titleIndex(3)
-                .createAtIndex(4)
-                .build();
+        SiteRequest request = SiteRequest.builder().build();
 
         // when & then
         mockMvc.perform(
@@ -124,8 +73,6 @@ class UserSiteControllerTest extends ControllerTestSupport {
         Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
         SiteRequest request = SiteRequest.builder()
                 .url("https://example.com")
-                .titleIndex(3)
-                .createAtIndex(4)
                 .build();
 
         given(userSiteService.removeSite(anyString(), any(SiteRequest.class)))
@@ -150,10 +97,7 @@ class UserSiteControllerTest extends ControllerTestSupport {
     void site_delete_failure_empty_url() throws Exception {
         // given
         Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
-        SiteRequest request = SiteRequest.builder()
-                .titleIndex(3)
-                .createAtIndex(4)
-                .build();
+        SiteRequest request = SiteRequest.builder().build();
 
         // when & then
         mockMvc.perform(
@@ -166,51 +110,5 @@ class UserSiteControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.code").value("400"))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("사이트 URL은 필수입니다."));
-    }
-
-    @DisplayName("titleIndex가 빈 사이트 삭제 요청 시 예외가 발생한다")
-    @Test
-    void site_delete_failure_empty_titleIndex() throws Exception {
-        // given
-        Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
-        SiteRequest request = SiteRequest.builder()
-                .url("https://example.com")
-                .createAtIndex(4)
-                .build();
-
-        // when & then
-        mockMvc.perform(
-                        post("/api/user/site/delete")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .principal(authentication)
-                )
-                .andDo(print())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value("제목 index는 필수입니다."));
-    }
-
-    @DisplayName("createdAtIndex가 빈 사이트 삭제 요청 시 예외가 발생한다")
-    @Test
-    void site_delete_failure_empty_createdAtIndex() throws Exception {
-        // given
-        Authentication authentication = new TestingAuthenticationToken("test@example.com", testCredential);
-        SiteRequest request = SiteRequest.builder()
-                .url("https://example.com")
-                .titleIndex(3)
-                .build();
-
-        // when & then
-        mockMvc.perform(
-                        post("/api/user/site/delete")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .principal(authentication)
-                )
-                .andDo(print())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value("작성일 index는 필수입니다."));
     }
 }

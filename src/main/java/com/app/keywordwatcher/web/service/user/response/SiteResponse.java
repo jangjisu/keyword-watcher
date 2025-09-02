@@ -6,13 +6,9 @@ import lombok.Getter;
 @Getter
 public class SiteResponse {
     private String url;
-    private Integer titleIndex;
-    private Integer createAtIndex;
 
     @Builder
-    public SiteResponse(String url, Integer titleIndex, Integer createAtIndex) {
+    public SiteResponse(String url) {
         this.url = url;
-        this.titleIndex = titleIndex;
-        this.createAtIndex = createAtIndex;
     }
 }

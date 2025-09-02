@@ -20,25 +20,17 @@ public class Site extends BaseEntity {
 
     private String url;
 
-    private int titlePosition;
-
-    private int createAtPosition;
-
-    private Site(String url, int titlePosition, int createAtPosition) {
+    private Site(String url) {
         this.url = url;
-        this.titlePosition = titlePosition;
-        this.createAtPosition = createAtPosition;
     }
 
-    public static Site create(String url, int titlePosition, int createAtPosition) {
-        return new Site(url, titlePosition, createAtPosition);
+    public static Site create(String url) {
+        return new Site(url);
     }
 
     public SiteResponse toResponse() {
         return SiteResponse.builder()
                 .url(this.url)
-                .titleIndex(this.titlePosition)
-                .createAtIndex(this.createAtPosition)
                 .build();
     }
 }
