@@ -1,5 +1,7 @@
 package com.app.keywordwatcher.crawler;
 
+import com.app.keywordwatcher.domain.post.Post;
+import com.app.keywordwatcher.domain.post.PostIdx;
 import com.app.keywordwatcher.util.CrawlingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
@@ -7,6 +9,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class IframeCrawlingHandler extends CrawlingHandler {
@@ -16,17 +21,17 @@ public class IframeCrawlingHandler extends CrawlingHandler {
     }
 
     @Override
-    protected Elements extractRows(Document doc) {
+    protected List<Post> extractPosts(Document doc) {
         Elements iframes = doc.select("iframe");
 
         if (iframes.isEmpty()) {
-            return new Elements();
+            return List.of();
         }
 
-        Elements allRows = new Elements();
+        List<Post> allRows = new ArrayList<>();
 
         for (Element iframe : iframes) {
-            Elements rows = processIframe(iframe);
+            List<Post> rows = processIframe(iframe);
             if (!rows.isEmpty()) {
                 allRows.addAll(rows);
             }
@@ -35,25 +40,37 @@ public class IframeCrawlingHandler extends CrawlingHandler {
         return allRows;
     }
 
-    private Elements processIframe(Element iframe) {
+    private List<Post> processIframe(Element iframe) {
         String iframeUrl = iframe.absUrl("src");
 
         if (iframeUrl.isEmpty()) {
-            return new Elements();
+            return List.of();
         }
 
         try {
             Document iframeDoc = CrawlingUtil.fetchDocument(iframeUrl);
-            Elements rows = iframeDoc.select("table tbody tr");
 
-            if (!rows.isEmpty()) {
-                log.info("TableCrawlingHandler extract rows: Found {} rows in the document in iframe : {}", rows.size(), iframeUrl);
+            Elements headers = getHeaders(iframeDoc);
+            if (headers.isEmpty()) {
+                return List.of();
             }
 
-            return rows;
+            PostIdx idx = PostIdx.getPostIdxFromHeader(headers);
+
+            if (Objects.requireNonNull(idx).isInValid()) {
+                return List.of();
+            }
+
+            Elements contentElements = getContentElements(iframeDoc);
+
+            if (!contentElements.isEmpty()) {
+                log.info("TableCrawlingHandler extract rows: Found {} rows in the document in iframe : {}", contentElements.size(), iframeUrl);
+            }
+
+            return getPosts(contentElements, idx);
         } catch (IOException e) {
             log.error("Failed to process iframe: {}, Error: {}", iframeUrl, e.getMessage());
-            return new Elements();
+            return List.of();
         }
     }
 }

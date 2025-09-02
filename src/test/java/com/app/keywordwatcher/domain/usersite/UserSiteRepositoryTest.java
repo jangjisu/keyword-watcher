@@ -36,9 +36,9 @@ class UserSiteRepositoryTest extends RepositoryTestSupport {
         User user1 = userRepository.save(User.create("testuser", "test@example.com", "password123", passwordEncoder));
         User user2 = userRepository.save(User.create("testuser2", "test2@example.com", "password123", passwordEncoder));
 
-        Site site1 = siteRepository.save(Site.create("https://site1.com", 1, 2));
-        Site site2 = siteRepository.save(Site.create("https://site2.com", 1, 2));
-        Site site3 = siteRepository.save(Site.create("https://site3.com", 1, 2));
+        Site site1 = siteRepository.save(Site.create("https://site1.com"));
+        Site site2 = siteRepository.save(Site.create("https://site2.com"));
+        Site site3 = siteRepository.save(Site.create("https://site3.com"));
 
         userSiteRepository.save(UserSite.create(user1, site1));
         userSiteRepository.save(UserSite.create(user1, site2));

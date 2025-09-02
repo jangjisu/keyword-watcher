@@ -36,7 +36,7 @@ class TableCrawlingHandlerTest {
         }
 
         String url = "https://culture.seoul.go.kr/culture/bbs/B0000002/list.do?menuNo=200052";
-        siteInfo = Site.create(url, 1, 3);
+        siteInfo = Site.create(url);
     }
 
     @DisplayName("키워드가 포함된 게시글이 있을 때 정상적으로 Post 목록을 반환한다")

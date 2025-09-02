@@ -1,6 +1,7 @@
 package com.app.keywordwatcher.crawler;
 
 import com.app.keywordwatcher.domain.post.Post;
+import com.app.keywordwatcher.domain.post.PostIdx;
 import com.app.keywordwatcher.domain.site.Site;
 import com.app.keywordwatcher.exception.CrawlingParseException;
 import com.app.keywordwatcher.util.CrawlingUtil;
@@ -13,6 +14,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,22 +28,20 @@ public abstract class CrawlingHandler {
             throw new CrawlingParseException("Document cannot be null");
         }
 
-        Elements rows = extractRows(doc);
-        for (Element row : rows) {
-            log.info("Crawling row: {}", row.text());
+        List<Post> posts = extractPosts(doc);
+        for (Post post : posts) {
+            log.info("Crawling row: {}", post.toString());
         }
 
-        if (rows.isEmpty()) {
+        if (posts.isEmpty()) {
             if (nextHandler == null) {
                 throw new CrawlingParseException("Unsupported document format for " + siteInfo.getUrl());
             }
             return nextHandler.handle(doc, siteInfo, date);
         }
 
-        return rows.stream()
-                .map(el -> mapToPostIfMatchDate(el, siteInfo, date))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        return posts.stream()
+                .filter(it -> it.getCreateAt().equals(date))
                 .toList();
     }
 
@@ -51,27 +51,30 @@ public abstract class CrawlingHandler {
         return handle(doc, siteInfo, date);
     }
 
-    protected abstract Elements extractRows(Document doc);
+    protected abstract List<Post> extractPosts(Document doc);
 
-    private Optional<Post> mapToPostIfMatchDate(Element element, Site siteInfo, LocalDate date) {
-        Elements tds = element.select("td");
-        int dateIdx = siteInfo.getCreateAtPosition();
-        int titleIdx = siteInfo.getTitlePosition();
+    protected List<Post> getPosts(Elements contentElement, PostIdx idx) {
+        List<Post> posts = new ArrayList<>();
 
-        if (tds.size() <= dateIdx || tds.size() <= titleIdx) {
-            throw new CrawlingParseException("Crawling parse error on " + siteInfo.getUrl() +
-                    ". Expected at least " + (Math.max(dateIdx, titleIdx) + 1) +
-                    " columns, but found " + tds.size() + ".");
+        for (Element content : contentElement) {
+            Elements tds = content.select("td");
+
+            String title = tds.get(idx.getTitleIdx()).text();
+            String dateText = tds.get(idx.getDateIdx()).text();
+
+            Optional<LocalDate> createAt = DateUtil.parseDate(dateText);
+
+            createAt.ifPresent(localDate -> posts.add(Post.createPost(title, localDate)));
         }
 
-        String title = tds.get(titleIdx).text();
-        String dateText = tds.get(dateIdx).text();
+        return posts;
+    }
 
-        Optional<LocalDate> createAt = DateUtil.parseDate(dateText);
-        if (createAt.isEmpty() || !createAt.get().equals(date)) {
-            return Optional.empty();
-        }
+    protected static Elements getHeaders(Document doc) {
+        return doc.select("table thead tr th");
+    }
 
-        return Optional.of(Post.createPost(title, createAt.get()));
+    protected static Elements getContentElements(Document doc) {
+        return doc.select("table tbody tr");
     }
 }

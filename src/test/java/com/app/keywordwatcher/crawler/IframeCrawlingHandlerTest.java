@@ -48,7 +48,7 @@ class IframeCrawlingHandlerTest {
         }
 
         String url = "https://www.gangnam.go.kr/contents/employment/1/view.do?mid=ID05_0418";
-        siteInfo = Site.create(url, 2, 4);
+        siteInfo = Site.create(url);
     }
 
     @BeforeEach

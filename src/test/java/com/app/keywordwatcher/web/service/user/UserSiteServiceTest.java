@@ -46,10 +46,10 @@ class UserSiteServiceTest extends ServiceTestSupport {
         User user2 = User.create("existUser2", "exist2@example.com", "password123", passwordEncoder);
         userRepository.save(user2);
 
-        Site site = Site.create("https://example.com", 2, 3);
+        Site site = Site.create("https://example.com");
         siteRepository.save(site);
 
-        Site site1 = Site.create("https://test.com", 3, 4);
+        Site site1 = Site.create("https://test.com");
         siteRepository.save(site1);
 
         entityManager.flush();
@@ -111,8 +111,6 @@ class UserSiteServiceTest extends ServiceTestSupport {
         // given
         SiteRequest newSite = SiteRequest.builder()
                 .url("https://newssite.com")
-                .titleIndex(2)
-                .createAtIndex(3)
                 .build();
 
         // when

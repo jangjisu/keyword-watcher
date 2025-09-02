@@ -98,8 +98,8 @@ class UserRepositoryTest extends RepositoryTestSupport {
     void save_user_with_sites() {
         // given
         User user2 = User.create("testuser2", "test2@example.com", "password123", passwordEncoder);
-        Site site = siteRepository.save(Site.create("https://example.com", 1, 2));
-        Site site2 = siteRepository.save(Site.create("https://example2.com", 1, 2));
+        Site site = siteRepository.save(Site.create("https://example.com"));
+        Site site2 = siteRepository.save(Site.create("https://example2.com"));
 
         user2.addUserSite(site);
         user2.addUserSite(site2);
@@ -119,7 +119,7 @@ class UserRepositoryTest extends RepositoryTestSupport {
     void delete_user_with_sites() {
         // given
         User user2 = User.create("testuser2", "test2@example.com", "password123", passwordEncoder);
-        Site savedSite = siteRepository.save(Site.create("https://example.com", 1, 2));
+        Site savedSite = siteRepository.save(Site.create("https://example.com"));
         user2.addUserSite(savedSite);
 
         User savedUser = userRepository.save(user2);
@@ -139,9 +139,9 @@ class UserRepositoryTest extends RepositoryTestSupport {
     void update_user_sites() {
         // given
         User user2 = User.create("testuser2", "test2@example.com", "password123", passwordEncoder);
-        Site site = siteRepository.save(Site.create("https://example.com", 1, 2));
-        Site site2 = siteRepository.save(Site.create("https://example2.com", 1, 2));
-        Site site3 = siteRepository.save(Site.create("https://example3.com", 1, 2));
+        Site site = siteRepository.save(Site.create("https://example.com"));
+        Site site2 = siteRepository.save(Site.create("https://example2.com"));
+        Site site3 = siteRepository.save(Site.create("https://example3.com"));
 
         user2.addUserSite(site);
         user2.addUserSite(site3);

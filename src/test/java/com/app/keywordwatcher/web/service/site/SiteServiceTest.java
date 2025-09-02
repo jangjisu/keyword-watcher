@@ -28,8 +28,6 @@ class SiteServiceTest extends ServiceTestSupport {
         // given
         SiteRequest siteRequest = SiteRequest.builder()
                 .url("https://example.com")
-                .titleIndex(2)
-                .createAtIndex(3)
                 .build();
 
         // when
@@ -48,7 +46,7 @@ class SiteServiceTest extends ServiceTestSupport {
     @Test
     void create_exist_site() {
         // given
-        Site existSite = Site.create("https://example.com", 2, 3);
+        Site existSite = Site.create("https://example.com");
         siteRepository.save(existSite);
 
         SiteRequest siteRequest = SiteRequest.builder()
@@ -70,7 +68,7 @@ class SiteServiceTest extends ServiceTestSupport {
     @Test
     void get_exist_site() {
         // given
-        Site existSite = Site.create("https://example.com", 3, 4);
+        Site existSite = Site.create("https://example.com");
         siteRepository.save(existSite);
 
         SiteRequest siteRequest = SiteRequest.builder()
@@ -105,14 +103,10 @@ class SiteServiceTest extends ServiceTestSupport {
         // given
         SiteRequest siteRequest1 = SiteRequest.builder()
                 .url("HTTPS://EXAMPLE.COM")
-                .titleIndex(2)
-                .createAtIndex(3)
                 .build();
 
         SiteRequest siteRequest2 = SiteRequest.builder()
                 .url("https://example.com")
-                .titleIndex(2)
-                .createAtIndex(3)
                 .build();
 
         // when
