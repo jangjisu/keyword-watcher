@@ -122,4 +122,34 @@ class SiteServiceTest extends ServiceTestSupport {
                 .extracting("url")
                 .containsExactlyInAnyOrder("HTTPS://EXAMPLE.COM", "https://example.com");
     }
+
+    @DisplayName("유효한 URL을 테스트하면 true를 반환한다")
+    @Test
+    void testUrl_returns_true_for_valid_url() {
+        // given
+        SiteRequest siteRequest = SiteRequest.builder()
+                .url("https://culture.seoul.go.kr/culture/bbs/B0000002/list.do?menuNo=200052")
+                .build();
+
+        // when
+        boolean result = siteService.testUrl(siteRequest);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("잘못된 URL을 테스트하면 false를 반환한다")
+    @Test
+    void testUrl_returns_false_for_invalid_url() {
+        // given
+        SiteRequest siteRequest = SiteRequest.builder()
+                .url("https://invalid-url-that-does-not-exist.com/nonexistent-page")
+                .build();
+
+        // when
+        boolean result = siteService.testUrl(siteRequest);
+
+        // then
+        assertThat(result).isFalse();
+    }
 }

@@ -23,6 +23,33 @@ import java.util.Optional;
 public abstract class CrawlingHandler {
     protected final CrawlingHandler nextHandler;
 
+    protected boolean canHandle(Document doc) {
+        if (doc == null) {
+            return false;
+        }
+
+        List<Post> posts = extractPosts(doc);
+        if (posts.isEmpty()) {
+            if (nextHandler == null) {
+                return false;
+            }
+            return nextHandler.canHandle(doc);
+        }
+
+        return true;
+    }
+
+    public boolean canHandle(String siteUrl) {
+        try {
+            Document doc = CrawlingUtil.fetchDocument(siteUrl);
+            log.info("Crawling Test URL: {}", siteUrl);
+            return canHandle(doc);
+        } catch (IOException e) {
+            log.warn("Failed to fetch document for URL: {}, Error: {}", siteUrl, e.getMessage());
+            return false;
+        }
+    }
+
     protected List<Post> handle(Document doc, Site siteInfo, LocalDate date) {
         if (doc == null) {
             throw new CrawlingParseException("Document cannot be null");
@@ -45,10 +72,14 @@ public abstract class CrawlingHandler {
                 .toList();
     }
 
-    public List<Post> handle(Site siteInfo, LocalDate date) throws IOException {
-        Document doc = CrawlingUtil.fetchDocument(siteInfo.getUrl());
-        log.info("Crawling document from URL: {}", siteInfo.getUrl());
-        return handle(doc, siteInfo, date);
+    public List<Post> handle(Site siteInfo, LocalDate date) {
+        try {
+            Document doc = CrawlingUtil.fetchDocument(siteInfo.getUrl());
+            log.info("Crawling document from URL: {}", siteInfo.getUrl());
+            return handle(doc, siteInfo, date);
+        } catch (IOException e) {
+            throw new CrawlingParseException("Unsupported document format for " + siteInfo.getUrl());
+        }
     }
 
     protected abstract List<Post> extractPosts(Document doc);

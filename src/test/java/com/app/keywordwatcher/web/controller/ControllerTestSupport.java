@@ -1,10 +1,12 @@
 package com.app.keywordwatcher.web.controller;
 
 import com.app.keywordwatcher.web.controller.auth.AuthController;
+import com.app.keywordwatcher.web.controller.site.SiteController;
 import com.app.keywordwatcher.web.controller.user.UserController;
 import com.app.keywordwatcher.web.controller.user.keyword.UserKeywordController;
 import com.app.keywordwatcher.web.controller.user.site.UserSiteController;
 import com.app.keywordwatcher.web.service.auth.AuthService;
+import com.app.keywordwatcher.web.service.site.SiteService;
 import com.app.keywordwatcher.web.service.user.UserKeywordService;
 import com.app.keywordwatcher.web.service.user.UserSiteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +24,7 @@ import static org.mockito.Mockito.reset;
 
 @WebMvcTest(controllers = {
         AuthController.class,
+        SiteController.class,
         UserController.class,
         UserKeywordController.class,
         UserSiteController.class,
@@ -44,6 +47,9 @@ public abstract class ControllerTestSupport {
     @Autowired
     protected UserSiteService userSiteService;
 
+    @Autowired
+    protected SiteService siteService;
+
     @TestConfiguration
     static class Mocks {
         @Bean
@@ -60,10 +66,15 @@ public abstract class ControllerTestSupport {
         UserSiteService userSiteService() {
             return mock(UserSiteService.class);
         }
+
+        @Bean
+        SiteService siteService() {
+            return mock(SiteService.class);
+        }
     }
 
     @BeforeEach
     void resetMocks() {
-        reset(authService, userKeywordService, userSiteService);
+        reset(authService, userKeywordService, userSiteService, siteService);
     }
 }
