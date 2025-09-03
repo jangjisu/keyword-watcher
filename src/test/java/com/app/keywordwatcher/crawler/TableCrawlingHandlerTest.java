@@ -110,4 +110,47 @@ class TableCrawlingHandlerTest {
                 .isInstanceOf(CrawlingParseException.class)
                 .hasMessageContaining("Unsupported document format for " + siteInfo.getUrl());
     }
+
+    @DisplayName("테이블이 있는 문서를 처리할 수 있으면 true를 반환한다")
+    @Test
+    void canHandle_returns_true_when_can_process() {
+        // given
+        TableCrawlingHandler handler = new TableCrawlingHandler(null);
+
+        // when
+        boolean result = handler.canHandle(doc);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("테이블이 없고 다음 핸들러가 없으면 false를 반환한다")
+    @Test
+    void canHandle_returns_false_when_cannot_process_and_no_next_handler() {
+        // given
+        TableCrawlingHandler handler = new TableCrawlingHandler(null);
+
+        // when
+        boolean result = handler.canHandle(emptyDoc);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @DisplayName("테이블이 없지만 다음 핸들러가 있으면 다음 핸들러로 위임한다")
+    @Test
+    void canHandle_delegates_to_next_handler_when_cannot_process() {
+        // given
+        CrawlingHandler mockNextHandler = Mockito.mock(CrawlingHandler.class);
+        when(mockNextHandler.canHandle(emptyDoc)).thenReturn(true);
+
+        TableCrawlingHandler handler = new TableCrawlingHandler(mockNextHandler);
+
+        // when
+        boolean result = handler.canHandle(emptyDoc);
+
+        // then
+        assertThat(result).isTrue();
+        Mockito.verify(mockNextHandler).canHandle(emptyDoc);
+    }
 }

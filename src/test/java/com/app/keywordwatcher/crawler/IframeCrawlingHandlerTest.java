@@ -135,4 +135,48 @@ class IframeCrawlingHandlerTest {
                 .isInstanceOf(CrawlingParseException.class)
                 .hasMessageContaining("Unsupported document format for " + siteInfo.getUrl());
     }
+
+    @DisplayName("iframe이 있는 문서를 처리할 수 있으면 true를 반환한다")
+    @Test
+    void canHandle_returns_true_when_can_process() {
+        // given
+        crawlingUtilMock.when(() -> CrawlingUtil.fetchDocument(anyString())).thenReturn(iframeDoc);
+        IframeCrawlingHandler handler = new IframeCrawlingHandler(null);
+
+        // when
+        boolean result = handler.canHandle(doc);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("iframe이 없고 다음 핸들러가 없으면 false를 반환한다")
+    @Test
+    void canHandle_returns_false_when_cannot_process_and_no_next_handler() {
+        // given
+        IframeCrawlingHandler handler = new IframeCrawlingHandler(null);
+
+        // when
+        boolean result = handler.canHandle(emptyDoc);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @DisplayName("iframe이 없지만 다음 핸들러가 있으면 다음 핸들러로 위임한다")
+    @Test
+    void canHandle_delegates_to_next_handler_when_cannot_process() {
+        // given
+        CrawlingHandler mockNextHandler = Mockito.mock(CrawlingHandler.class);
+        when(mockNextHandler.canHandle(emptyDoc)).thenReturn(true);
+
+        IframeCrawlingHandler handler = new IframeCrawlingHandler(mockNextHandler);
+
+        // when
+        boolean result = handler.canHandle(emptyDoc);
+
+        // then
+        assertThat(result).isTrue();
+        Mockito.verify(mockNextHandler).canHandle(emptyDoc);
+    }
 }

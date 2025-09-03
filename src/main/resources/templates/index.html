@@ -174,13 +174,19 @@
                                 사이트 URL을 입력해주세요.
                             </div>
                         </div>
+                        <div class="d-flex gap-2 mb-2">
+                            <button type="button" class="btn btn-outline-primary" id="testSiteBtn" onclick="testSiteUrl()">
+                                <i class="bi bi-play-circle me-1"></i>테스트
+                            </button>
+                            <div id="siteTestStatus" class="flex-grow-1 small text-muted align-self-center"></div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle me-1"></i>취소
                     </button>
-                    <button type="button" class="btn btn-success" onclick="addSite()">
+                    <button type="button" class="btn btn-success" id="addSiteConfirmBtn" onclick="addSite()" disabled>
                         <i class="bi bi-check-circle me-1"></i>추가
                     </button>
                 </div>
@@ -335,33 +341,84 @@
             });
         }
 
+        let lastSiteTest = { success: false, url: null };
+
+        function resetSiteModalState() {
+            lastSiteTest = { success: false, url: null };
+            document.getElementById('siteTestStatus').innerHTML = '';
+            document.getElementById('addSiteConfirmBtn').disabled = true;
+        }
+
+        document.getElementById('addSiteModal').addEventListener('show.bs.modal', resetSiteModalState);
+
+        function testSiteUrl() {
+            const siteUrlInput = document.getElementById('siteUrlInput');
+            const url = siteUrlInput.value.trim();
+            const statusEl = document.getElementById('siteTestStatus');
+            const addBtn = document.getElementById('addSiteConfirmBtn');
+
+            addBtn.disabled = true;
+            lastSiteTest = { success: false, url: null };
+
+            if (!url) {
+                siteUrlInput.classList.add('is-invalid');
+                statusEl.innerHTML = '<span class="text-danger">URL을 입력하세요.</span>';
+                return;
+            }
+            siteUrlInput.classList.remove('is-invalid');
+
+            statusEl.innerHTML = '<span class="text-info"><i class="bi bi-hourglass-split me-1"></i>테스트 중...</span>';
+
+            fetch('/api/user/test', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.code === 200 && res.data) {
+                    if (res.data.success) {
+                        lastSiteTest = { success: true, url: res.data.url };
+                        statusEl.innerHTML = '<span class="text-success"><i class="bi bi-check-circle me-1"></i>테스트 성공 (' + (res.data.elapsedMillis) + 'ms) Title: ' + (res.data.title || '-') + '</span>';
+                        addBtn.disabled = false;
+                    } else {
+                        statusEl.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i>실패: ' + res.data.message + '</span>';
+                    }
+                } else {
+                    statusEl.innerHTML = '<span class="text-danger">테스트 요청 실패</span>';
+                }
+            })
+            .catch(err => {
+                console.error('Site test error', err);
+                statusEl.innerHTML = '<span class="text-danger">에러 발생</span>';
+            });
+        }
+
         function addSite() {
             const siteUrlInput = document.getElementById('siteUrlInput');
             const siteUrl = siteUrlInput.value.trim();
+            const statusEl = document.getElementById('siteTestStatus');
 
             if (!siteUrl) {
                 siteUrlInput.classList.add('is-invalid');
                 return;
             }
-
-            siteUrlInput.classList.remove('is-invalid');
+            if (!lastSiteTest.success || lastSiteTest.url !== siteUrl && !siteUrl.startsWith(lastSiteTest.url || 'NO_MATCH')) {
+                statusEl.innerHTML = '<span class="text-danger">먼저 테스트를 통과해야 합니다.</span>';
+                return;
+            }
 
             fetch('/api/user/site/add', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url: siteUrl })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.code === 200) {
-                    // 모달 닫기 및 입력 필드 초기화
                     const modal = bootstrap.Modal.getInstance(document.getElementById('addSiteModal'));
                     modal.hide();
                     siteUrlInput.value = '';
-
-                    // 사이트 목록 새로고침
                     loadSites();
                 } else {
                     alert('사이트 추가 실패: ' + (data.message || '알 수 없는 오류'));
