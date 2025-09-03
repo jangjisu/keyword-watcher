@@ -1,7 +1,7 @@
-package com.app.keywordwatcher.web.controller.user.keyword;
+package com.app.keywordwatcher.web.controller.userkeyword;
 
 import com.app.keywordwatcher.web.controller.ApiResponse;
-import com.app.keywordwatcher.web.controller.user.keyword.request.KeywordRequest;
+import com.app.keywordwatcher.web.controller.keyword.request.KeywordRequest;
 import com.app.keywordwatcher.web.service.user.UserKeywordService;
 import com.app.keywordwatcher.web.service.user.response.KeywordResponse;
 import jakarta.validation.Valid;

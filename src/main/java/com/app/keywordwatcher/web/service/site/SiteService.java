@@ -3,7 +3,7 @@ package com.app.keywordwatcher.web.service.site;
 import com.app.keywordwatcher.crawler.CrawlingHandler;
 import com.app.keywordwatcher.domain.site.Site;
 import com.app.keywordwatcher.domain.site.SiteRepository;
-import com.app.keywordwatcher.web.controller.user.site.request.SiteRequest;
+import com.app.keywordwatcher.web.controller.site.request.SiteRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

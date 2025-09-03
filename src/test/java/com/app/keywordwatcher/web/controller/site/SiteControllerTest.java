@@ -1,7 +1,7 @@
 package com.app.keywordwatcher.web.controller.site;
 
 import com.app.keywordwatcher.web.controller.ControllerTestSupport;
-import com.app.keywordwatcher.web.controller.user.site.request.SiteRequest;
+import com.app.keywordwatcher.web.controller.site.request.SiteRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;

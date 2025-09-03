@@ -2,7 +2,7 @@ package com.app.keywordwatcher.web.service.site;
 
 import com.app.keywordwatcher.domain.site.Site;
 import com.app.keywordwatcher.domain.site.SiteRepository;
-import com.app.keywordwatcher.web.controller.user.site.request.SiteRequest;
+import com.app.keywordwatcher.web.controller.site.request.SiteRequest;
 import com.app.keywordwatcher.web.service.ServiceTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
