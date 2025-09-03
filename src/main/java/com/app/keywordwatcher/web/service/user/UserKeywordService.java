@@ -3,7 +3,7 @@ package com.app.keywordwatcher.web.service.user;
 import com.app.keywordwatcher.domain.keyword.Keyword;
 import com.app.keywordwatcher.domain.user.User;
 import com.app.keywordwatcher.domain.userkeyword.UserKeyword;
-import com.app.keywordwatcher.web.controller.user.keyword.request.KeywordRequest;
+import com.app.keywordwatcher.web.controller.keyword.request.KeywordRequest;
 import com.app.keywordwatcher.web.service.keyword.KeywordService;
 import com.app.keywordwatcher.web.service.user.response.KeywordResponse;
 import lombok.RequiredArgsConstructor;

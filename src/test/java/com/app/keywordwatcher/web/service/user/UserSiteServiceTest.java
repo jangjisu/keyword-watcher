@@ -4,7 +4,7 @@ import com.app.keywordwatcher.domain.site.Site;
 import com.app.keywordwatcher.domain.site.SiteRepository;
 import com.app.keywordwatcher.domain.user.User;
 import com.app.keywordwatcher.domain.user.UserRepository;
-import com.app.keywordwatcher.web.controller.user.site.request.SiteRequest;
+import com.app.keywordwatcher.web.controller.site.request.SiteRequest;
 import com.app.keywordwatcher.web.service.ServiceTestSupport;
 import com.app.keywordwatcher.web.service.user.response.SiteResponse;
 import jakarta.persistence.EntityManager;
