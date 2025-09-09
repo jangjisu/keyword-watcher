@@ -71,27 +71,10 @@ class IframeCrawlingHandlerTest {
         IframeCrawlingHandler handler = new IframeCrawlingHandler(null);
 
         // when
-        List<Post> result = handler.handle(doc, siteInfo, testDate);
+        List<Post> result = handler.handle(doc);
 
         // then
-        assertThat(result).hasSize(1)
-                .extracting(Post::getTitle)
-                .contains("서울특별시 강남구 농지이용관리지원 기간제근로자 채용 서류전형 합격자 공고");
-    }
-
-    @DisplayName("날짜가 일치하는 게시물이 없으면 빈 목록을 반환한다")
-    @Test
-    void no_matching_date() {
-        // given
-        crawlingUtilMock.when(() -> CrawlingUtil.fetchDocument(anyString())).thenReturn(iframeDoc);
-        IframeCrawlingHandler handler = new IframeCrawlingHandler(null);
-        LocalDate noMatchDate = LocalDate.of(2025, 1, 1);
-
-        // when
-        List<Post> result = handler.handle(doc, siteInfo, noMatchDate);
-
-        // then
-        assertThat(result).isEmpty();
+        assertThat(result).hasSize(10);
     }
 
     @DisplayName("doc 이 null인 경우 예외를 던진다")
@@ -100,8 +83,10 @@ class IframeCrawlingHandlerTest {
         // given
         IframeCrawlingHandler handler = new IframeCrawlingHandler(null);
 
+        Document nullDoc = null;
+
         // when // then
-        assertThatThrownBy(() -> handler.handle(null, siteInfo, testDate))
+        assertThatThrownBy(() -> handler.handle(nullDoc))
                 .isInstanceOf(CrawlingParseException.class)
                 .hasMessageContaining("Document cannot be null");
     }
@@ -112,28 +97,28 @@ class IframeCrawlingHandlerTest {
         // given
         CrawlingHandler mockNextHandler = Mockito.mock(CrawlingHandler.class);
         List<Post> expectedResult = List.of(Post.createPost("Test Post", testDate));
-        when(mockNextHandler.handle(emptyDoc, siteInfo, testDate)).thenReturn(expectedResult);
+        when(mockNextHandler.handle(emptyDoc)).thenReturn(expectedResult);
 
         IframeCrawlingHandler handler = new IframeCrawlingHandler(mockNextHandler);
 
         // when
-        List<Post> result = handler.handle(emptyDoc, siteInfo, testDate);
+        List<Post> result = handler.handle(emptyDoc);
 
         // then
         assertThat(result).isEqualTo(expectedResult);
-        Mockito.verify(mockNextHandler).handle(emptyDoc, siteInfo, testDate);
+        Mockito.verify(mockNextHandler).handle(emptyDoc);
     }
 
-    @DisplayName("다음 핸들러가 존재하지 않는다면 지원하지 않는 문서형식 예외를 던진다")
+    @DisplayName("다음 핸들러가 존재하지 않는다면 핸들러가 존재하지 않는 예외를 던진다")
     @Test
     void handle_throws_exception_when_no_next_handler() {
         // given
         IframeCrawlingHandler handler = new IframeCrawlingHandler(null);
 
         // when & then
-        assertThatThrownBy(() -> handler.handle(emptyDoc, siteInfo, testDate))
+        assertThatThrownBy(() -> handler.handle(emptyDoc))
                 .isInstanceOf(CrawlingParseException.class)
-                .hasMessageContaining("Unsupported document format for " + siteInfo.getUrl());
+                .hasMessageContaining("No More Handler");
     }
 
     @DisplayName("iframe이 있는 문서를 처리할 수 있으면 true를 반환한다")
