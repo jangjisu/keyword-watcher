@@ -35,7 +35,7 @@ class SiteControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.status").value("200 OK"))
                 .andExpect(jsonPath("$.data").value(true));
     }
 
@@ -54,7 +54,7 @@ class SiteControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.status").value("400 BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("사이트 URL은 필수입니다."));
     }
 }

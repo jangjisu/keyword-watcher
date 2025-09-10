@@ -11,17 +11,17 @@ import org.springframework.mail.javamail.JavaMailSender;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
-class MailSenderTest {
+class CustomMailSenderTest {
 
     @Mock
     private JavaMailSender javaMailSender;
 
-    private MailSender mailSender;
+    private CustomMailSender customMailSender;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        mailSender = new MailSender(javaMailSender);
+        customMailSender = new CustomMailSender(javaMailSender);
     }
 
     @DisplayName("메일을 전송한다.")
@@ -36,7 +36,7 @@ class MailSenderTest {
         doNothing().when(javaMailSender).send(message);
 
         // when
-        mailSender.sendMail(message);
+        customMailSender.sendMail(message);
 
         // then
         verify(javaMailSender).send(message);

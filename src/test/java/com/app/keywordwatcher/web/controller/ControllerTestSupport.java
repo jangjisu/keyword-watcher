@@ -14,12 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 
 @WebMvcTest(controllers = {
@@ -29,49 +26,27 @@ import static org.mockito.Mockito.reset;
         UserKeywordController.class,
         UserSiteController.class,
 })
-@Import(ControllerTestSupport.Mocks.class)
-@AutoConfigureMockMvc(addFilters = false) // spring security 필터를 비활성화
+@AutoConfigureMockMvc(addFilters = false) // spring security 필터 비활성화
 public abstract class ControllerTestSupport {
+
     @Autowired
     protected MockMvc mockMvc;
 
-    @Autowired
-    protected ObjectMapper objectMapper;
 
-    @Autowired
+    protected ObjectMapper objectMapper = new ObjectMapper();
+
+    // Service 계층은 MockBean으로 등록
+    @MockitoBean
     protected AuthService authService;
 
-    @Autowired
+    @MockitoBean
     protected UserKeywordService userKeywordService;
 
-    @Autowired
+    @MockitoBean
     protected UserSiteService userSiteService;
 
-    @Autowired
+    @MockitoBean
     protected SiteService siteService;
-
-    @TestConfiguration
-    static class Mocks {
-        @Bean
-        AuthService authService() {
-            return mock(AuthService.class);
-        }
-
-        @Bean
-        UserKeywordService userKeywordService() {
-            return mock(UserKeywordService.class);
-        }
-
-        @Bean
-        UserSiteService userSiteService() {
-            return mock(UserSiteService.class);
-        }
-
-        @Bean
-        SiteService siteService() {
-            return mock(SiteService.class);
-        }
-    }
 
     @BeforeEach
     void resetMocks() {

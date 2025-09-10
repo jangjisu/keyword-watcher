@@ -50,7 +50,7 @@ public abstract class CrawlingHandler {
         }
     }
 
-    protected List<Post> handle(Document doc, Site siteInfo, LocalDate date) {
+    protected List<Post> handle(Document doc) {
         if (doc == null) {
             throw new CrawlingParseException("Document cannot be null");
         }
@@ -62,23 +62,27 @@ public abstract class CrawlingHandler {
 
         if (posts.isEmpty()) {
             if (nextHandler == null) {
-                throw new CrawlingParseException("Unsupported document format for " + siteInfo.getUrl());
+                throw new CrawlingParseException("No More Handler");
             }
-            return nextHandler.handle(doc, siteInfo, date);
+            return nextHandler.handle(doc);
         }
 
-        return posts.stream()
-                .filter(it -> it.getCreateAt().equals(date))
-                .toList();
+        return posts;
     }
 
-    public List<Post> handle(Site siteInfo, LocalDate date) {
+    public List<Post> handle(Site siteInfo) {
         try {
             Document doc = CrawlingUtil.fetchDocument(siteInfo.getUrl());
             log.info("Crawling document from URL: {}", siteInfo.getUrl());
-            return handle(doc, siteInfo, date);
+            return handle(doc);
         } catch (IOException e) {
-            throw new CrawlingParseException("Unsupported document format for " + siteInfo.getUrl());
+            throw new CrawlingParseException("cannot Load document for " + siteInfo.getUrl());
+        } catch (CrawlingParseException e) {
+            if ("No More Handler".equals(e.getMessage())) {
+                throw new CrawlingParseException("unsupported document for " + siteInfo.getUrl());
+            }
+
+            throw e;
         }
     }
 
