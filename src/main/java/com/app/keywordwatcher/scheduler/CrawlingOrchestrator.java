@@ -37,7 +37,7 @@ public class CrawlingOrchestrator {
      * 2. 각 사이트에 대해 크롤링 수행
      * 3. 해당 사이트를 등록한 사용자들의 키워드와 매칭하여 메일 발송
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public void  performDailyCrawling() {
         log.info("=== 일일 크롤링 작업 시작 ===");
 
