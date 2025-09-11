@@ -59,7 +59,6 @@ class CrawlingOrchestratorTest {
     private Post matchingPost;
     private Post matchingPostNotToday;
     private Post nonMatchingPost;
-    private Keyword testKeyword;
 
     @BeforeEach
     void setUp() {
@@ -70,8 +69,7 @@ class CrawlingOrchestratorTest {
         // 테스트 데이터 설정
         testSite = Site.create("https://test.com");
         testUser = User.create("testUser", "test@example.com", "password123", passwordEncoder);
-        testKeyword = Keyword.create("자바");
-        testUser.addUserKeyword(testKeyword);
+        testUser.addUserKeyword(Keyword.create("자바"));
         matchingPost = Post.createPost("자바 스프링 강의", LocalDate.now());
         matchingPostNotToday = Post.createPost("자바 스프링 강의", LocalDate.MIN);
         nonMatchingPost = Post.createPost("파이썬 강의", LocalDate.now());
