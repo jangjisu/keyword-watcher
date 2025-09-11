@@ -8,18 +8,18 @@ import com.app.keywordwatcher.domain.site.Site;
 import com.app.keywordwatcher.domain.site.SiteRepository;
 import com.app.keywordwatcher.domain.user.User;
 import com.app.keywordwatcher.domain.user.UserRepository;
-import com.app.keywordwatcher.mail.MailMessageMaker;
 import com.app.keywordwatcher.mail.CustomMailSender;
+import com.app.keywordwatcher.mail.MailMessageMaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class CrawlingOrchestrator {
@@ -38,7 +38,7 @@ public class CrawlingOrchestrator {
      * 3. 해당 사이트를 등록한 사용자들의 키워드와 매칭하여 메일 발송
      */
     @Transactional
-    public void  performDailyCrawling() {
+    public void performDailyCrawling() {
         log.info("=== 일일 크롤링 작업 시작 ===");
 
         try {
@@ -64,8 +64,6 @@ public class CrawlingOrchestrator {
         try {
             log.info("사이트 크롤링 시작: {}", site.getUrl());
 
-            // 오늘 날짜의 게시글 크롤링
-            LocalDate today = LocalDate.now();
             List<Post> posts = crawlingHandlerChain.handle(site);
 
             if (posts.isEmpty()) {
@@ -74,7 +72,7 @@ public class CrawlingOrchestrator {
             }
 
             List<Post> newPosts = posts.stream()
-                    .filter(post -> post.getCreateAt().isEqual(today))
+                    .filter(post -> post.getCreateAt().isEqual(LocalDate.now()))
                     .toList();
 
             if (newPosts.isEmpty()) {
@@ -137,9 +135,9 @@ public class CrawlingOrchestrator {
     private void sendNewPostNotification(User user, Site site, Post post, String matchedKeyword) {
         try {
             SimpleMailMessage message = mailMessageMaker.makeNewPostAlertMessage(
-                user.getEmail(),
-                site.getUrl(),
-                post.getTitle()
+                    user.getEmail(),
+                    site.getUrl(),
+                    post.getTitle()
             );
 
             customMailSender.sendMail(message);
@@ -147,10 +145,10 @@ public class CrawlingOrchestrator {
 
             // 메일 발송 성공 로그 저장
             CrawlingLog successLog = CrawlingLog.createMailSentLog(
-                site.getUrl(),
-                post.getTitle(),
-                user.getEmail(),
-                matchedKeyword
+                    site.getUrl(),
+                    post.getTitle(),
+                    user.getEmail(),
+                    matchedKeyword
             );
             crawlingLogRepository.save(successLog);
 
@@ -159,10 +157,10 @@ public class CrawlingOrchestrator {
 
             // 메일 발송 실패 로그 저장
             CrawlingLog failLog = CrawlingLog.createMailFailLog(
-                site.getUrl(),
-                post.getTitle(),
-                user.getEmail(),
-                e.getMessage()
+                    site.getUrl(),
+                    post.getTitle(),
+                    user.getEmail(),
+                    e.getMessage()
             );
             crawlingLogRepository.save(failLog);
         }
@@ -174,8 +172,8 @@ public class CrawlingOrchestrator {
     private void sendCrawlingFailureNotification(Site site) {
         try {
             SimpleMailMessage message = mailMessageMaker.makeCrawlingTestFailMessage(
-                "SYSTEM",
-                site.getUrl()
+                    "SYSTEM",
+                    site.getUrl()
             );
 
             customMailSender.sendMail(message);
@@ -191,8 +189,8 @@ public class CrawlingOrchestrator {
      */
     private void saveCrawlingFailureLog(Site site, Exception exception) {
         CrawlingLog failLog = CrawlingLog.createCrawlingFailLog(
-            site.getUrl(),
-            exception.getMessage()
+                site.getUrl(),
+                exception.getMessage()
         );
         crawlingLogRepository.save(failLog);
     }
