@@ -103,13 +103,13 @@ spring:
 
   datasource:
     url: ${PRODUCTION_DB_URL}
-    driver-class-name: org.h2.Driver
+    driver-class-name: ${PRODUCTION_DB_DRIVER}
     username: ${PRODUCTION_DB_USERNAME}
     password: ${PRODUCTION_DB_PASSWORD}
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${PRODUCTION_DB_DDL_AUTO}
     show-sql: false
     properties:
       hibernate:
