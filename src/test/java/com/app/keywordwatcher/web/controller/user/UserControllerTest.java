@@ -31,7 +31,7 @@ class UserControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.status").value("200 OK"))
+                .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.data.userId").value("testuser@example.com"));
     }
 }

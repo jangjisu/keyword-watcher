@@ -42,7 +42,7 @@ class UserKeywordControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.status").value("200 OK"))
+                .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.data").value(1L));
     }
 
@@ -63,7 +63,7 @@ class UserKeywordControllerTest extends ControllerTestSupport {
                 )
                 .andDo(print())
                 .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("400 BAD_REQUEST"))
+                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("키워드는 필수입니다."));
     }
 
@@ -89,7 +89,7 @@ class UserKeywordControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.status").value("200 OK"))
+                .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.data").value(1L));
     }
 
@@ -111,7 +111,7 @@ class UserKeywordControllerTest extends ControllerTestSupport {
                 )
                 .andDo(print())
                 .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("400 BAD_REQUEST"))
+                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("키워드는 필수입니다."));
     }
 }
