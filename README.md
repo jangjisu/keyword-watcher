@@ -7,7 +7,7 @@
 ### Backend
 
 - **Java 17**
-- **Spring Boot 4.0**
+- **Spring Boot 3.5.6**
 - **Spring Data JPA**
 - **Spring Security**
 - **Spring Mail**
