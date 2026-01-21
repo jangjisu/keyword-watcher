@@ -35,6 +35,7 @@ dependencies {
 
 	// Database
 	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	// Web Crawling
 	implementation 'org.jsoup:jsoup:1.21.1'
@@ -45,6 +46,8 @@ dependencies {
 
 	// Password Encryption
 	implementation 'org.springframework.security:spring-security-crypto'
+
+	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 
 	// Test dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
